@@ -1,6 +1,7 @@
 from django.db import models
 
 class Organization(models.Model):
+    import_id = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=256)
     parent_organization = models.ForeignKey('self',
                                             null=True,
