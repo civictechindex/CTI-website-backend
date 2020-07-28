@@ -1,6 +1,6 @@
-# Python: Getting Started
+# CTI-website-backend
 
-A barebones Django app, which can easily be deployed to Heroku.
+A Django app, which can be deployed to Heroku.
 
 This application supports the [Getting Started with Python on Heroku](https://devcenter.heroku.com/articles/getting-started-with-python) article - check it out.
 
