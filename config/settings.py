@@ -54,6 +54,7 @@ DJANGO_APPS = [
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
+    "rest_framework_swagger",
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
@@ -204,5 +205,15 @@ MANAGERS = ADMINS
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = "/static/"
+
+REST_FRAMEWORK = {
+    # Parser classes priority-wise for Swagger
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.JSONParser',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+}
 
 django_heroku.settings(locals())
