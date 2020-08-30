@@ -5,6 +5,11 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
+from django.conf.urls import url, include
+
+from rest_framework_swagger.views import get_swagger_view
+schema_view = get_swagger_view(title='Swagger API Documentation')
+
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -25,6 +30,7 @@ urlpatterns += [
     path("api/", include("config.api_router")),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
+    url(r'^swagger/', schema_view),
 ]
 
 if settings.DEBUG:
