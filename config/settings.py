@@ -54,7 +54,6 @@ DJANGO_APPS = [
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
-    "rest_framework_swagger",
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
@@ -63,6 +62,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "rest_framework",
     "rest_framework.authtoken",
+    "drf_yasg"
 ]
 
 LOCAL_APPS = [
