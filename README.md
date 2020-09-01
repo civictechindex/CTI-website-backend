@@ -2,7 +2,7 @@
 ## Running Locally 
 
 - Import data from data source
-    - [Excel Sheet] (https://drive.google.com/file/d/1xiLeyMwZc-n6eB1R_XdCJ00YrarfnR_w/view)
+    - [Excel Sheet](https://drive.google.com/file/d/1xiLeyMwZc-n6eB1R_XdCJ00YrarfnR_w/view)
     - Download as csv
     - Upload the csv file in the project root 
 
@@ -10,7 +10,7 @@ Below are the steps to get started using docker and pip
 
 ### Getting Started with Docker
 
-- Initialise the Django Administration Page
+- Steps to setup the Django Administration Page
 - Go to manage.py file and verify the settings file is pointing correctly
     - ``os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.docker_settings") ``
 ```
@@ -22,7 +22,7 @@ docker-compose exec web python manage.py import_initial_data filename.csv
 
 ### Getting Started with pip
 
-- Create and activate a [virtual environment] (https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+- Create and activate a [virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 - Install the packages
 ``pip install -r requirements.txt``
 - Go to manage.py file and verify the settings file is pointing correctly
@@ -49,6 +49,6 @@ python manage.py import_initial_data filename.csv
 python manage.py runserver
 ```
 
-- After succesful execution of either of the above two steps -> Docker or pip 
-    - Navigate to the Django Administration Page http://127.0.0.1:8000/admin/
-    - Login using in superuser credentials
+### After succesful execution of either of the above two steps -> Docker or pip 
+- Navigate to the Django Administration Page http://127.0.0.1:8000/admin/
+- Login using superuser credentials
