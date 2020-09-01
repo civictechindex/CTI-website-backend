@@ -1,45 +1,54 @@
-# CTI-website-backend
+# CTI-Website-Backend
+## Running Locally 
 
-A Django app, which can be deployed to Heroku.
+- Import data from data source
+    - [Excel Sheet] (https://drive.google.com/file/d/1xiLeyMwZc-n6eB1R_XdCJ00YrarfnR_w/view)
+    - Download as csv
+    - Upload the csv file in the project root 
 
-This application supports the [Getting Started with Python on Heroku](https://devcenter.heroku.com/articles/getting-started-with-python) article - check it out.
+Below are the steps to get started using docker and pip
 
-## Running Locally
+### Getting Started with Docker
 
-Make sure you have Python 3.7 [installed locally](http://install.python-guide.org). To push to Heroku, you'll need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli), as well as [Postgres](https://devcenter.heroku.com/articles/heroku-postgresql#local-setup).
-
-```sh
-$ git clone https://github.com/heroku/python-getting-started.git
-$ cd python-getting-started
-
-$ python3 -m venv getting-started
-$ pip install -r requirements.txt
-
-$ createdb python_getting_started
-
-$ python manage.py migrate
-$ python manage.py collectstatic
-
-$ heroku local
+- Initialise the Django Administration Page
+- Go to manage.py file and verify the settings file is pointing correctly
+    - ``os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.docker_settings") ``
+```
+docker-compose up -d --build
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
+docker-compose exec web python manage.py import_initial_data filename.csv
 ```
 
-Your app should now be running on [localhost:5000](http://localhost:5000/).
+### Getting Started with pip
 
-## Deploying to Heroku
-
-```sh
-$ heroku create
-$ git push heroku master
-
-$ heroku run python manage.py migrate
-$ heroku open
+- Create and activate a [virtual environment] (https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+- Install the packages
+``pip install -r requirements.txt``
+- Go to manage.py file and verify the settings file is pointing correctly
+    - ``os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.local_settings") ``
+- Create a Database with the following credentails 
 ```
-or
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'civictechindexadmin',
+        'USER': 'civictechindexroot',
+        'PASSWORD': 'civictechindexroot',
+        'HOST': 'localhost',
+        'PORT': 5432
+    }
+}
+```
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+- Execute the following steps
+```
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py import_initial_data filename.csv
+python manage.py runserver
+```
 
-## Documentation
-
-For more information about using Python on Heroku, see these Dev Center articles:
-
-- [Python on Heroku](https://devcenter.heroku.com/categories/python)
+- After succesful execution of either of the above two steps -> Docker or pip 
+    - Navigate to the Django Administration Page http://127.0.0.1:8000/admin/
+    - Login using in superuser credentials
