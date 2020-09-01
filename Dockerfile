@@ -14,47 +14,17 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-RUN addgroup --system django \
-    && adduser --system --ingroup django django
+# create root directory for our project in the container
+RUN mkdir /code
 
-# Requirements are installed here to ensure they will be cached.
-COPY ./requirements.txt /requirements.txt
+# Set the working directory to /code
+WORKDIR /code
+
+# Copy the current directory contents into the container at /code
+ADD requirements.txt /code/
+
 RUN pip install -r requirements.txt
 
-COPY ./compose/production/django/entrypoint /entrypoint
-RUN sed -i 's/\r$//g' /entrypoint
-RUN chmod +x /entrypoint
-RUN chown django /entrypoint
-
-COPY ./compose/production/django/start /start
-RUN sed -i 's/\r$//g' /start
-RUN chmod +x /start
-RUN chown django /start
-COPY --chown=django:django . /app
-
-USER django
-
-#FROM garland/aws-cli-docker:1.15.47
-
-#COPY ./compose/production/aws/maintenance /usr/local/bin/maintenance
-#COPY ./compose/production/postgres/maintenance/_sourced /usr/local/bin/maintenance/_sourced
-
-#RUN chmod +x /usr/local/bin/maintenance/*
-
-#RUN mv /usr/local/bin/maintenance/* /usr/local/bin \
-#    && rmdir /usr/local/bin/maintenance
-
-
-
-  
-#FROM traefik:v2.0
-#RUN mkdir -p /etc/traefik/acme
-#RUN touch /etc/traefik/acme/acme.json
-#RUN chmod 600 /etc/traefik/acme/acme.json
-#COPY ./compose/production/traefik/traefik.yml /etc/traefik
-
+ADD . /code/
 EXPOSE 8000
-CMD exec gunicorn config.wsgi:application — bind 0.0.0.0:8000 — workers 3
-WORKDIR /app
-
-ENTRYPOINT ["python","manage.py"]
+CMD python3 manage.py runserver 0.0.0.0:8000
