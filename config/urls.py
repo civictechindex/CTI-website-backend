@@ -5,6 +5,21 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
+from django.conf.urls import url, include
+
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+   openapi.Info(
+        title="Civic Tech Index API Documentation",
+        default_version='v1',
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
+
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -25,6 +40,7 @@ urlpatterns += [
     path("api/", include("config.api_router")),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
+    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
 if settings.DEBUG:
