@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Organization, Link
+from .models import Organization, Link, FAQ
+
 
 class OrganizationAdmin(admin.ModelAdmin):
     model = Organization
@@ -19,5 +20,13 @@ class LinkAdmin(admin.ModelAdmin):
         return mark_safe(f'<a href="{obj.url}" target="_blank">{obj.url}</a>')
 
 
+class FAQAdmin(admin.ModelAdmin):
+    model = FAQ
+    list_display = ('id', 'live', 'question',)
+    list_filter = ('live',)
+    search_fields = ('question', 'answer')
+
+
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Link, LinkAdmin)
+admin.site.register(FAQ, FAQAdmin)
