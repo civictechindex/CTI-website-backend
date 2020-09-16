@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.db import models
+
 
 class Organization(models.Model):
     import_id = models.IntegerField(blank=True, null=True)
@@ -33,3 +35,28 @@ class Link(models.Model):
 
     def __str__(self):
         return f"{self.link_type}: {self.url}"
+
+
+# ###### FAQS ###########
+class FAQ(models.Model):
+    question = models.CharField(max_length=512)
+    answer = models.TextField(max_length=4096, blank=True)
+    live = models.BooleanField(default=False)
+    view_count = models.PositiveIntegerField(default=0)
+    created_date = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='faqs_created',
+        blank=True,
+        on_delete=models.CASCADE
+        )
+    modified_date = models.DateTimeField(auto_now=True)
+    modified_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='faqs_modified',
+        blank=True,
+        on_delete=models.CASCADE
+        )
+
+    def __str__(self):
+        return f"FAQ {self.id}: {self.question}"
