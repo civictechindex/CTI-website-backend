@@ -8,11 +8,19 @@
 
 Below are the steps to get started using docker and pip
 
+- Create a env file inside /config for writing the database credentials, example below
+```
+POSTGRES_NAME='postgres'
+POSTGRES_PASSWORD='postgres'
+POSTGRES_USER='postgres'
+POSTGRES_HOST='db'
+```
+
 ### Getting Started with Docker
 
 - Steps to setup the Django Administration Page
-- Go to manage.py file and verify the settings file is pointing correctly
-    - ``os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.docker_settings") ``
+
+- Execute the docker-compose steps
 ```
 docker-compose up -d --build
 docker-compose exec web python manage.py migrate
@@ -25,21 +33,6 @@ docker-compose exec web python manage.py import_initial_data filename.csv
 - Create and activate a [virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 - Install the packages
 ``pip install -r requirements.txt``
-- Go to manage.py file and verify the settings file is pointing correctly
-    - ``os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.local_settings") ``
-- Create a Database with the following credentails 
-```
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'civictechindexadmin',
-        'USER': 'civictechindexroot',
-        'PASSWORD': 'civictechindexroot',
-        'HOST': 'localhost',
-        'PORT': 5432
-    }
-}
-```
 
 - Execute the following steps
 ```
