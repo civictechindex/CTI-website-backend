@@ -25,6 +25,11 @@ ADD requirements.txt /code/
 
 RUN pip install -r requirements.txt
 
+ENV POSTGRES_PASSWORD=
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_HOST=db
+ENV POSTGRES_NAME=postgres
+
 ADD . /code/
 EXPOSE 8000
 CMD python3 manage.py runserver 0.0.0.0:8000
