@@ -4,7 +4,7 @@ on:
   push:
     # Publish `main` as Docker `latest` image.
     branches:
-      - ci #TODO: change to main.
+      - ci-container #TODO: change to main.
 
     # Publish `v1.2.3` tags as releases.
     tags:
