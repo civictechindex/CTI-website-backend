@@ -13,8 +13,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import django_heroku
 from pathlib import Path
+import environ
 
 import socket
+
+env = environ.Env()
+# reading .env file
+env.read_env()
 
 INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
@@ -62,7 +67,6 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "rest_framework",
     "rest_framework.authtoken",
-    "drf_yasg"
 ]
 
 LOCAL_APPS = [
@@ -151,18 +155,21 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+POSTGRES_PASSWORD = env('POSTGRES_PASSWORD')
+POSTGRES_USER = env('POSTGRES_USER')
+POSTGRES_NAME = env('POSTGRES_NAME')
+POSTGRES_HOST = env('POSTGRES_HOST')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'civictechindexadmin',
-        'USER': 'AbhishekChhabra',
-        'PASSWORD': 'samplepass',
-        'HOST': 'localhost',
+        'NAME': POSTGRES_NAME,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': POSTGRES_HOST,
         'PORT': 5432
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -205,15 +212,5 @@ MANAGERS = ADMINS
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = "/static/"
-
-REST_FRAMEWORK = {
-    # Parser classes priority-wise for Swagger
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser',
-        'rest_framework.parsers.JSONParser',
-    ],
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
-}
 
 django_heroku.settings(locals())
