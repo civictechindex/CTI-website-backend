@@ -49,13 +49,12 @@ jobs:
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
 
-      - name: Log into GitHub Container Registry
-      # TODO: Create a PAT with `read:packages` and `write:packages` scopes and save it as an Actions secret `CR_PAT`
+      - name: Log into GitHub Packages
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
-      - name: Push image to GitHub Container Registry
+      - name: Push image to GitHub Package Registry. #TODO: Move to container registry when out of beta.
         run: |
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository_owner }}/CTI-website-backend/$IMAGE-NAME
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository_owner }}/CTI-website-backend/$IMAGE_NAME
 
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
