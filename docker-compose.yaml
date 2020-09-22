@@ -8,7 +8,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
-      - 5432:15432
+      - 15432:5432
   web:
     build: .
     command: python /code/manage.py runserver 0.0.0.0:8000
