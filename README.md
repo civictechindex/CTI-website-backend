@@ -8,7 +8,7 @@
 
 Below are the steps to get started using docker and pip
 
-- Create a env file inside /config for writing the database credentials, example below
+- Create a .env file inside /config for writing the database credentials, example below
 ```
 POSTGRES_NAME='postgres'
 POSTGRES_PASSWORD='postgres'
