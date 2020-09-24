@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Organization, Link, FAQ
+from .models import Organization, Link, FAQ, NotificationSubscription
 
 
 class OrganizationAdmin(admin.ModelAdmin):
@@ -27,6 +27,13 @@ class FAQAdmin(admin.ModelAdmin):
     search_fields = ('question', 'answer')
 
 
+class NotificationSubscriptionAdmin(admin.ModelAdmin):
+    model = NotificationSubscription
+    list_display = ('email_address', 'notification_type', 'ip_address', 'created_date')
+    search_fields = ('email_address', )
+
+
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Link, LinkAdmin)
 admin.site.register(FAQ, FAQAdmin)
+admin.site.register(NotificationSubscription, NotificationSubscriptionAdmin)

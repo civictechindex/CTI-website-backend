@@ -60,3 +60,15 @@ class FAQ(models.Model):
 
     def __str__(self):
         return f"FAQ {self.id}: {self.question}"
+
+
+# ######## Notification Signups ##########
+class NotificationSubscription(models.Model):
+    notification_type = models.CharField(max_length=256)
+    email_address = models.EmailField(max_length=256)
+    # I am allowing NOT storing ip_address so we don't have to fake it when adding via admin interface
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [['notification_type', 'email_address']]

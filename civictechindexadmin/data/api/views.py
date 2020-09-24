@@ -1,11 +1,11 @@
 from django.db.models import F
 from rest_framework import status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
-from .serializers import OrganizationSerializer, LinkSerializer, FAQSerializer
+from .serializers import OrganizationSerializer, LinkSerializer, FAQSerializer, NotificationSubscriptionSerializer
 from ..models import Organization, Link, FAQ
 
 
@@ -41,3 +41,16 @@ class FAQViewSet(ReadOnlyModelViewSet):
             return Response("", status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(f"FAQ {pk} not found", status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def subscribe(request):
+    """
+    At least at the moment, we only want to create NotificationSubscriptions.
+    The only people who should have access to see the collected information
+    can see (and manage) it from the django admin interface.
+    """
+    serializer = NotificationSubscriptionSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save(ip_address=request.META["REMOTE_ADDR"])
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
