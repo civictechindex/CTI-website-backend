@@ -14,7 +14,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: image
+  IMAGE_NAME: service
 
 jobs:
   # Run tests.
