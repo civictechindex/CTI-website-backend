@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  db:
+    image: "postgres"
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 15432:5432
+  web:
+    build: .
+    command: python /code/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+  init:
+    build: .
+    command: /bin/sh ./init/provision.sh
+    environment:
+      - SU_USERNAME=username
+      - SU_PASSWORD=password
+      - SU_EMAIL=admin@civictechindex.org
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
