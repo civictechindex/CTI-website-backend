@@ -2,6 +2,7 @@ import csv
 from django.core.management.base import BaseCommand
 from ...models import Organization, Link
 
+
 class Command(BaseCommand):
     help = ("Import data into our Organization and Link models. Requires you to provide a path to the data file.")
 
@@ -36,7 +37,7 @@ class Command(BaseCommand):
                                            ('facebook_link', 'FaceBook'),
                                            ('twitter_link', 'Twitter'),
                                            ('github_link', 'GitHub'),
-                ]:
+                                           ]:
                     if row[field_name]:
                         link, created = Link.objects.get_or_create(organization_id=org.id, link_type=option)
                         link.url = row[field_name]

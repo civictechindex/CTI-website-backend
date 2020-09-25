@@ -36,4 +36,4 @@ class NotificationSubscriptionSerializer(serializers.Serializer):
         try:
             return NotificationSubscription.objects.create(**validated_data)
         except IntegrityError:
-            raise ValidationError(detail=f"We already have a subscription for {validated_data['email_address']}") 
+            raise ValidationError(detail=f"We already have a subscription for {validated_data['email_address']}")
