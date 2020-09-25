@@ -4,6 +4,7 @@ from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
+from drf_yasg.utils import swagger_auto_schema
 
 from .serializers import OrganizationSerializer, LinkSerializer, FAQSerializer, NotificationSubscriptionSerializer
 from ..models import Organization, Link, FAQ
@@ -42,7 +43,7 @@ class FAQViewSet(ReadOnlyModelViewSet):
         else:
             return Response(f"FAQ {pk} not found", status=status.HTTP_404_NOT_FOUND)
 
-
+@swagger_auto_schema(method='post', request_body=NotificationSubscriptionSerializer)
 @api_view(['POST'])
 def subscribe(request):
     """
