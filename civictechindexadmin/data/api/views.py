@@ -43,6 +43,7 @@ class FAQViewSet(ReadOnlyModelViewSet):
         else:
             return Response(f"FAQ {pk} not found", status=status.HTTP_404_NOT_FOUND)
 
+
 @swagger_auto_schema(method='post', request_body=NotificationSubscriptionSerializer)
 @api_view(['POST'])
 def subscribe(request):
