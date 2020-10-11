@@ -20,19 +20,34 @@ jobs:
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
   test:
+    if: github.ref == 'refs/heads/tests'
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: postgres:12.3-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: github_actions
+        ports:
+          - 5432:5432
+        options: --mount type=tmpfs,destination=/var/lib/postgresql/data --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - uses: actions/checkout@v2
-
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          ref: 'refs/heads/tests'
+      - name: Set up Python 3.8.3
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8.3
+      - name: Install dependencies
+        run: pip install -r app/requirements.txt
       - name: Run tests
-        run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
+        run: pytest
+        env:
+          SYSTEM_ENV: GITHUB_WORKFLOW
 
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
