@@ -37,10 +37,10 @@ jobs:
         uses: actions/checkout@v1
         with:
           ref: 'refs/heads/tests'
-      - name: Set up Python 3.8.3
+      - name: Set up Python 3.8.6
         uses: actions/setup-python@v1
         with:
-          python-version: 3.8.3
+          python-version: 3.8.6
       - name: Install dependencies
         run: pip install -r app/requirements.txt
       - name: Run tests
