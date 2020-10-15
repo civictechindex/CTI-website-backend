@@ -58,3 +58,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           # The default PostgreSQL port
           POSTGRES_PORT: 5432
+    - name: Publish code coverage
+      uses: paambaati/codeclimate-action@v2.7.4
+      env:
+        CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
