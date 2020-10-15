@@ -1,4 +1,6 @@
 # CTI-Website-Backend
+[![Maintainability](https://api.codeclimate.com/v1/badges/8051528982d28405e1bb/maintainability)](https://codeclimate.com/github/civictechindex/CTI-website-backend/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/8051528982d28405e1bb/test_coverage)](https://codeclimate.com/github/civictechindex/CTI-website-backend/test_coverage)
 ## Running Locally 
 
 - Import data from data source
