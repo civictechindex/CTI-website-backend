@@ -49,15 +49,19 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test & Publish code coverage
-      uses: paambaati/codeclimate-action@v2.7.4
+    - name: Test and Coverage Report
       env:
-        CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
         POSTGRES_HOST: localhost
         POSTGRES_PASSWORD: postgres
         # The default PostgreSQL port
         POSTGRES_PORT: 5432
+      run: |
+        coverage run -m pytest
+    - name: Publish Test Coverage
+      uses: paambaati/codeclimate-action@v2.7.4
+      env:
+        CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
       with: 
-        coverageCommand: coverage run -m pytest;coverage xml
+        coverageCommand: coverage xml
         coverageLocations: |
           ${{github.workspace}}/coverage.xml:coverage.py
