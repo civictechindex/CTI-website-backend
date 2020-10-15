@@ -58,6 +58,6 @@ jobs:
         # The default PostgreSQL port
         POSTGRES_PORT: 5432
       with: 
-        coverageCommand: coverage run -m pytest
+        coverageCommand: coverage run -m pytest;coverage xml
         coverageLocations: |
           ${{github.workspace}}/coverage.xml:coverage.py
