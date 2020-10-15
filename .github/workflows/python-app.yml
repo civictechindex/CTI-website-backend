@@ -59,3 +59,5 @@ jobs:
         POSTGRES_PORT: 5432
       with: 
         coverageCommand: coverage run -m pytest
+        coverageLocations: |
+          ${{github.workspace}}/*.coverage:coverage.py
