@@ -60,4 +60,4 @@ jobs:
       with: 
         coverageCommand: coverage run -m pytest
         coverageLocations: |
-          ${{github.workspace}}/*.coverage:coverage.py
+          ${{github.workspace}}/.coverage:coverage.py
