@@ -49,14 +49,14 @@ class FAQ(models.Model):
         related_name='faqs_created',
         blank=True,
         on_delete=models.CASCADE
-        )
+    )
     modified_date = models.DateTimeField(auto_now=True)
     modified_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='faqs_modified',
         blank=True,
         on_delete=models.CASCADE
-        )
+    )
 
     def __str__(self):
         return f"FAQ {self.id}: {self.question}"

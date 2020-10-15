@@ -10,8 +10,8 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
+# import os
+# import sys
 
 # import django
 # sys.path.insert(0, os.path.abspath('..'))
@@ -22,8 +22,8 @@ import sys
 # -- Project information -----------------------------------------------------
 
 project = "Civic Tech Index Admin"
-copyright = """2020, Cynthia Kiser"""
-author = "Cynthia Kiser"
+copyright = """2020, Hack for LA"""
+author = "The Developers of Hack for LA"
 
 
 # -- General configuration ---------------------------------------------------
