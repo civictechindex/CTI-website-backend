@@ -18,6 +18,17 @@ services:
       - 8888:8000
     depends_on:
       - db
+  init:
+    build: .
+    command: /bin/sh ./init/provision.sh
+    environment:
+      - SU_USERNAME=username
+      - SU_PASSWORD=password
+      - SU_EMAIL=admin@civictechindex.org
+    volumes:
+      - .:/code
+    depends_on:
+      - db
 
 volumes:
   postgres_data:
