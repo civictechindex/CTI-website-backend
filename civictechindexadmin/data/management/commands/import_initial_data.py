@@ -20,7 +20,6 @@ class Command(BaseCommand):
                 else:
                     continue
 
-
     def _create_organization(self, row):
         org, created = Organization.objects.get_or_create(name=row['organization_name'])
         org.import_id = row['ID']
@@ -31,7 +30,7 @@ class Command(BaseCommand):
             if parent:
                 org.parent_organization = parent
             else:
-                print(f"{row['organization_name']} had a parent id {row['ParentID']} but we did not find that organization")
+                print(f"{row['organization_name']} had a parent id {row['ParentID']} but we did not find that organization")  # noqa
 
         try:
             org.full_clean()
@@ -42,14 +41,12 @@ class Command(BaseCommand):
             print(e)
             print(row)
 
-
     def _create_links(self, row, org):
         for field_name, option in [('website_link', 'WebSite'),
                                    ('meetup_link', 'MeetUp'),
                                    ('facebook_link', 'FaceBook'),
                                    ('twitter_link', 'Twitter'),
-                                   ('github_link', 'GitHub'),
-        ]:
+                                   ('github_link', 'GitHub')]:
             if row[field_name]:
                 link, created = Link.objects.get_or_create(organization_id=org.id, link_type=option)
                 link.url = row[field_name]
@@ -61,4 +58,3 @@ class Command(BaseCommand):
                     print(e)
                     print(option, row[field_name])
                     continue
-
