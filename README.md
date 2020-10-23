@@ -45,5 +45,5 @@ python manage.py runserver
 ```
 
 ### After succesful execution of either of the above two steps -> Docker or pip 
-- Navigate to the Django Administration Page http://127.0.0.1:8000/admin/
+- Navigate to the Django Administration Page http://127.0.0.1:8888/admin/
 - Login using superuser credentials
