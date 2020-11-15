@@ -8,7 +8,7 @@ from ..models import Organization, Link, FAQ, NotificationSubscription
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'location', 'image_url', 'links', 'parent_organization', ]
+        fields = ['id', 'name', 'github_name', 'github_id', 'location', 'image_url', 'links', 'parent_organization', ]
         depth = 1
 
 
