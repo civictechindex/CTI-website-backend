@@ -1,7 +1,7 @@
 from django.conf import settings
-from factory import DjangoModelFactory, Sequence, SubFactory
+from factory import DjangoModelFactory, Iterator, Sequence, SubFactory
 
-from ..models import FAQ
+from ..models import FAQ, Link, Organization
 
 
 class UserFactory(DjangoModelFactory):
@@ -20,3 +20,21 @@ class FAQFactory(DjangoModelFactory):
     answer = Sequence(lambda n: "Answer %d" % n)
     created_by = SubFactory(UserFactory)
     modified_by = created_by
+
+
+class OrganizationFactory(DjangoModelFactory):
+    class Meta:
+        model = Organization
+        django_get_or_create = ["name"]
+
+    name = Sequence(lambda n: "Open Thing %d" % n)
+
+
+# NOTE to use this you must instantiate with he related Organization
+class LinkFactory(DjangoModelFactory):
+    class Meta:
+        model = Link
+        django_get_or_create = ["url"]
+
+    link_type = Iterator(['WebSite', 'MeetUp', 'FaceBook', 'Twitter', 'GitHub'])
+    url = Sequence(lambda n: "https://example.com/%d" % n)
