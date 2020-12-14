@@ -30,7 +30,8 @@ class Command(BaseCommand):
             if parent:
                 org.parent_organization = parent
             else:
-                print(f"{row['organization_name']} had a parent id {row['ParentID']} but we did not find that organization")
+                print(f"{row['organization_name']} had a parent id {row['ParentID']}"
+                      " but we did not find that organization")
 
         try:
             org.full_clean()
