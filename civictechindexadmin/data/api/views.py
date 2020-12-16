@@ -1,6 +1,7 @@
 from django.db.models import F
 from rest_framework import status
 from rest_framework.decorators import action, api_view
+from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
@@ -29,6 +30,8 @@ class FAQViewSet(ReadOnlyModelViewSet):
     """
     serializer_class = FAQSerializer
     queryset = FAQ.objects.filter(live=True).all().order_by('-view_count', 'question')
+    filter_backends = [SearchFilter]
+    search_fields = ['@question', '@answer']
 
     @action(detail=True, methods=['post'])
     def increment_count(self, request, pk=None):
