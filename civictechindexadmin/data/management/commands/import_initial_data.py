@@ -43,13 +43,11 @@ class Command(BaseCommand):
             print(row)
 
     def _create_links(self, row, org):
-        for field_name, option in [
-            ('website_link', 'WebSite'),
-            ('meetup_link', 'MeetUp'),
-            ('facebook_link', 'FaceBook'),
-            ('twitter_link', 'Twitter'),
-            ('github_link', 'GitHub'),
-        ]:
+        for field_name, option in [('website_link', 'WebSite'),
+                                   ('meetup_link', 'MeetUp'),
+                                   ('facebook_link', 'FaceBook'),
+                                   ('twitter_link', 'Twitter'),
+                                   ('github_link', 'GitHub')]:
             if row[field_name]:
                 link, created = Link.objects.get_or_create(organization_id=org.id, link_type=option)
                 link.url = row[field_name]
