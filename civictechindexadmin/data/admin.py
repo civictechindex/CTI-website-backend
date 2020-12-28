@@ -22,7 +22,7 @@ class LinkAdmin(admin.ModelAdmin):
 
 class FAQAdmin(admin.ModelAdmin):
     model = FAQ
-    list_display = ('id', 'live', 'question',)
+    list_display = ('id', 'live', 'view_count', 'question',)
     list_filter = ('live',)
     search_fields = ('question', 'answer')
 
