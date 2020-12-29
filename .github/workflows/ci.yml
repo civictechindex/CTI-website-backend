@@ -60,7 +60,7 @@ jobs:
     - name: Upload Results
       uses: paambaati/codeclimate-action@v2.7.4
       env:
-        CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+        CC_TEST_REPORTER_ID: 5b40557fcc7a99c392c66444bd551d4cfc30b915398c87f38da1ad2608245c6c
       with: 
         coverageCommand: coverage xml
         coverageLocations: |
