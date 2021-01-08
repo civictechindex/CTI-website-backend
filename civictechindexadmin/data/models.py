@@ -41,9 +41,18 @@ class Link(models.Model):
 
 # ###### FAQS ###########
 class FAQ(models.Model):
+    FAQ_STATUS_CHOICES = [
+        ('New', 'New'),
+        ('ToBeAnswered', 'To be answered'),
+        ('ToBeDeleted', 'To be deleted'),
+        ('Duplicate', 'Duplicate'),
+    ]
     question = models.CharField(max_length=512)
     answer = models.TextField(max_length=4096, blank=True)
     live = models.BooleanField(default=False)
+    status = models.CharField(max_length=100,
+                                 choices=FAQ_STATUS_CHOICES,
+				 default='New')
     view_count = models.PositiveIntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
