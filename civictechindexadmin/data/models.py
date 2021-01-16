@@ -34,6 +34,9 @@ class Link(models.Model):
     link_type = models.CharField(max_length=200,
                                  choices=LINK_TYPE_CHOICES)
     url = models.CharField(max_length=1024)
+    http_status = models.CharField(max_length=8, null=True, blank=True)
+    http_status_date = models.DateField(null=True, blank=True)
+    notes = models.CharField(max_length=4096, null=True, blank=True)
 
     def __str__(self):
         return f"{self.link_type}: {self.url}"

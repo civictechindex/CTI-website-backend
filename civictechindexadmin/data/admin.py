@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import Organization, Link, FAQ, NotificationSubscription
+from .StatusCodeFilter import StatusCodeFilter
 
 
 class OrganizationAdmin(admin.ModelAdmin):
@@ -12,9 +13,10 @@ class OrganizationAdmin(admin.ModelAdmin):
 
 class LinkAdmin(admin.ModelAdmin):
     model = Link
-    list_display = ('id', 'link_type', 'display_url')
+    list_display = ('id', 'link_type', 'display_url', 'http_status')
     list_display_links = ('id', )
-    list_filter = ('link_type', )
+    list_filter = ('link_type', StatusCodeFilter)
+    search_fields = ('url',)
 
     def display_url(self, obj):
         return mark_safe(f'<a href="{obj.url}" target="_blank">{obj.url}</a>')
