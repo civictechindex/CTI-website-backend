@@ -40,6 +40,7 @@ class Command(BaseCommand):
                 #logger.error('broken_links.requests_exception', url=url, error=e)
                 if url.http_status != "broken":
                     url.http_status = "broken"
+                    url.http_status_date = now.today()
                     url.save()
                 msg = 'broken link ' + str(url)
                 print(msg)
@@ -50,6 +51,7 @@ class Command(BaseCommand):
                 bad_links += 1
                 if url.http_status != str(response.status_code):
                     url.http_status = str(response.status_code)
+                    url.http_status_date = now.today()
                     url.save()
                 msg = 'status ' + str(response.status_code) + ' for ' + str(url)
                 print(msg)
