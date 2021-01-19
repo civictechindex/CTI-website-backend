@@ -56,8 +56,17 @@ class Command(BaseCommand):
                 msg = 'status ' + str(response.status_code) + ' for ' + str(url)
                 print(msg)
                 fd.write(msg+'\n')
-                
-            #if(links >= 10):
+            else:
+                # if status used to be >= 300 or broken and now it's good, 'reset' the values in database			
+                if url.http_status is not None:
+                    url.http_status = None
+                    url.http_status_date = now.today()
+                    url.save()
+                    msg = str(url.organization) + ' ' + url.link_type + ' URL was bad but now it has been fixed ' + str(response.status_code) 
+                    print(msg)
+                    fd.write(msg+'\n')
+                			
+            #if(links >= 20):
                 #break # to stop on testing/debugging
                 
         print('========================================')
