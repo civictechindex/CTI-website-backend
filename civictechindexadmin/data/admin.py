@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import Organization, Link, FAQ, NotificationSubscription
-from .StatusCodeFilter import StatusCodeFilter
+from .status_code_filter import StatusCodeFilter
 
 
 class OrganizationAdmin(admin.ModelAdmin):

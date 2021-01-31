@@ -36,7 +36,7 @@ class Link(models.Model):
     url = models.CharField(max_length=1024)
     http_status = models.CharField(max_length=8, null=True, blank=True)
     http_status_date = models.DateField(null=True, blank=True)
-    notes = models.CharField(max_length=4096, null=True, blank=True)
+    notes = models.TextField(max_length=4096, null=True, blank=True)
 
     def __str__(self):
         return f"{self.link_type}: {self.url}"
@@ -54,8 +54,8 @@ class FAQ(models.Model):
     answer = models.TextField(max_length=4096, blank=True)
     live = models.BooleanField(default=False)
     status = models.CharField(max_length=100,
-                                 choices=FAQ_STATUS_CHOICES,
-				 default='New')
+                              choices=FAQ_STATUS_CHOICES,
+                              default='New')
     view_count = models.PositiveIntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
