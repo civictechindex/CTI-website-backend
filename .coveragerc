@@ -1,0 +1,38 @@
+# .coveragerc to control coverage.py for this project
+
+[run]
+branch = True
+# We don't need to report test coverage on support files or the contents of the virtualenv.
+omit =
+    */tests/*
+    */migrations/*
+    manage.py
+    config/settings.py
+    config/wsgi.py
+    civictechindexadmin/data/apps.py
+    civictechindexadmin/utils/context_processors.py
+    civictechindexadmin/utils/storages.py
+    /ve/*
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain about missing debug-only code:
+    def __repr__
+    def __str__
+    if self\.debug
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError
+
+    # Don't complain if non-runnable code isn't run:
+    if 0:
+    if __name__ == .__main__.:
+
+ignore_errors = True
+skip_empty = True
+# skip_covered = True
