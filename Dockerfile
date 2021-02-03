@@ -1,4 +1,4 @@
-  
+
 FROM python:3.8-slim-buster
 
 ENV PYTHONUNBUFFERED 1
@@ -23,7 +23,7 @@ WORKDIR /code
 # Copy the current directory contents into the container at /code
 ADD requirements.txt /code/
 
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
 ENV POSTGRES_PASSWORD=
 ENV POSTGRES_USER=postgres
