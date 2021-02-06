@@ -2,7 +2,7 @@ from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from ..models import Organization, Link, FAQ, NotificationSubscription
+from ..models import Organization, Link, FAQ, NotificationSubscription, Alias
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -25,6 +25,12 @@ class FAQSerializer(serializers.ModelSerializer):
         fields = ['id', 'question', 'answer', 'view_count', ]
         depth = 1
 
+
+class AliasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Alias
+        fields = ['id', 'tag', 'alias', ]
+        depth = 1
 
 class NotificationSubscriptionSerializer(serializers.Serializer):
     email_address = serializers.EmailField()

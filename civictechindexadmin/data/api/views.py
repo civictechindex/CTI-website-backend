@@ -3,12 +3,12 @@ from rest_framework import status
 from rest_framework.decorators import action, api_view
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import OrganizationSerializer, LinkSerializer, FAQSerializer, NotificationSubscriptionSerializer
-from ..models import Organization, Link, FAQ
+from .serializers import OrganizationSerializer, LinkSerializer, FAQSerializer, NotificationSubscriptionSerializer, AliasSerializer
+from ..models import Organization, Link, FAQ, Alias
 
 
 class OrganizationViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
@@ -45,6 +45,12 @@ class FAQViewSet(ReadOnlyModelViewSet):
             return Response("", status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(f"FAQ {pk} not found", status=status.HTTP_404_NOT_FOUND)
+
+
+class AliasViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet, CreateModelMixin):
+    serializer_class = AliasSerializer
+    queryset = Alias.objects.all()
+    lookup_field = "alias"
 
 
 @swagger_auto_schema(method='post', request_body=NotificationSubscriptionSerializer)
