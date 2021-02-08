@@ -3,7 +3,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
 from civictechindexadmin.data.api.views import (
-    OrganizationViewSet, LinkViewSet, FAQViewSet,
+    OrganizationViewSet, LinkViewSet, FAQViewSet, AliasViewSet,
     subscribe
 )
 
@@ -17,6 +17,7 @@ else:
 router.register("organizations", OrganizationViewSet)
 router.register("links", LinkViewSet)
 router.register("faqs", FAQViewSet)
+router.register("aliases", AliasViewSet)
 
 urlpatterns = router.urls
 

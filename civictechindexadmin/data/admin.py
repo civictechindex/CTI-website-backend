@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Organization, Link, FAQ, NotificationSubscription
+from .models import Organization, Link, FAQ, NotificationSubscription, Alias
 from .status_code_filter import StatusCodeFilter
 
 
@@ -29,6 +29,13 @@ class FAQAdmin(admin.ModelAdmin):
     search_fields = ('question', 'answer')
 
 
+class AliasAdmin(admin.ModelAdmin):
+    model = Alias
+    list_display = ('id', 'tag', 'alias')
+    list_filter = ('tag', 'alias',)
+    search_fields = ('tag', 'alias')
+
+
 class NotificationSubscriptionAdmin(admin.ModelAdmin):
     model = NotificationSubscription
     list_display = ('email_address', 'notification_type', 'ip_address', 'created_date')
@@ -38,4 +45,5 @@ class NotificationSubscriptionAdmin(admin.ModelAdmin):
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Link, LinkAdmin)
 admin.site.register(FAQ, FAQAdmin)
+admin.site.register(Alias, AliasAdmin)
 admin.site.register(NotificationSubscription, NotificationSubscriptionAdmin)
