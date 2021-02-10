@@ -51,7 +51,8 @@ jobs:
 
       - name: Push image to GitHub Package Registry. #TODO: Move to container registry when out of beta.
         run: |
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository_owner }}/CTI-website-backend/$IMAGE_NAME
+          IMAGE_ID=785100737511.dkr.ecr.us-west-1.amazonaws.com/cti-backend
+          # IMAGE_ID=docker.pkg.github.com/${{ github.repository_owner }}/CTI-website-backend/$IMAGE_NAME
 
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
