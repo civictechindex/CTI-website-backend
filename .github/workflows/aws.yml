@@ -55,7 +55,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: 785100737511.dkr.ecr.us-west-1.amazonaws.com/cti-backend
+        ECR_REPOSITORY: cti-backend
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
