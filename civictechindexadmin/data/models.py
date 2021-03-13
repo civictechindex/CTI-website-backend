@@ -15,6 +15,7 @@ class Organization(models.Model):
     github_name = models.CharField(max_length=1024, blank=True)
     github_id = models.IntegerField(blank=True, null=True)
     cti_contributor = models.NullBooleanField(blank=True, default=None)
+    org_tag = models.CharField(max_length=128, blank=True)
 
     def __str__(self):
         return f"Org: {self.name}"
