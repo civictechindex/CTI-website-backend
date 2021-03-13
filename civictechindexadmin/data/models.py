@@ -14,6 +14,7 @@ class Organization(models.Model):
     image_url = models.URLField(max_length=2048, blank=True)
     github_name = models.CharField(max_length=1024, blank=True)
     github_id = models.IntegerField(blank=True, null=True)
+    cti_contributor = models.NullBooleanField(blank=True, default=None)
 
     def __str__(self):
         return f"Org: {self.name}"
