@@ -6,7 +6,7 @@ from .status_code_filter import StatusCodeFilter
 
 class OrganizationAdmin(admin.ModelAdmin):
     model = Organization
-    list_display = ('import_id', 'name', 'location', 'parent_organization')
+    list_display = ('import_id', 'name', 'location', 'cti_contributor', 'parent_organization')
     list_display_links = ('name', )
     search_fields = ('name', 'location')
 
