@@ -5,10 +5,19 @@ from rest_framework.exceptions import ValidationError
 from ..models import Organization, Link, FAQ, NotificationSubscription, Alias
 
 
-class OrganizationSerializer(serializers.ModelSerializer):
+class ParentOrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'github_name', 'github_id', 'location', 'image_url', 'links', 'parent_organization', 'cti_contributor']
+        fields = ['id', 'name', 'org_tag', 'cti_contributor', 'parent_organization']
+        depth = 1
+		
+		
+class OrganizationSerializer(serializers.ModelSerializer):
+    parent_organization = ParentOrganizationSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Organization
+        fields = ['id', 'name', 'github_name', 'github_id', 'location', 'image_url', 'links', 'parent_organization', 'cti_contributor', 'org_tag']
         depth = 1
 
 
