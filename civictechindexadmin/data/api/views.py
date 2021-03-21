@@ -17,6 +17,18 @@ class OrganizationViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, 
     lookup_field = "name"
 
 
+@swagger_auto_schema(method='get')
+@api_view(['GET'])
+def org_by_github_id(request, github_id):
+    try:
+        org = Organization.objects.get(github_id=github_id)
+    except Organization.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = OrganizationSerializer(org)
+    return Response(serializer.data)
+
+
 class LinkViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = LinkSerializer
     queryset = Link.objects.all()

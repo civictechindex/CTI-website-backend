@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 
 from civictechindexadmin.data.api.views import (
     OrganizationViewSet, LinkViewSet, FAQViewSet, AliasViewSet,
-    subscribe
+    subscribe, org_by_github_id
 )
 
 app_name = "api"
@@ -23,4 +23,5 @@ urlpatterns = router.urls
 
 urlpatterns += [
     path('subscribe/', subscribe),
+    path('organizations/github_id/<int:github_id>/' , org_by_github_id)
 ]
