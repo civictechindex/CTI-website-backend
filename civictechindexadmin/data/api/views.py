@@ -3,19 +3,30 @@ from rest_framework import status
 from rest_framework.decorators import action, api_view
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin, CreateModelMixin
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.generics import RetrieveAPIView
 
 from .serializers import OrganizationSerializer, LinkSerializer, FAQSerializer, NotificationSubscriptionSerializer, AliasSerializer
 from ..models import Organization, Link, FAQ, Alias
 
 
-class OrganizationViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
+class OrganizationViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, CreateModelMixin, GenericViewSet):
     serializer_class = OrganizationSerializer
     queryset = Organization.objects.all()
     lookup_field = "name"
 
+    #@action(detail=True)
+    #def by_name(self, request):
+        #org = Organization.objects.filter(id=id)
+        #return Response(org)
+	
+	
+class OrganizationViewById(RetrieveAPIView):
+    serializer_class = OrganizationSerializer
+    queryset = Organization.objects.all()
+    #lookup_field = "id"
 
 class LinkViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = LinkSerializer
