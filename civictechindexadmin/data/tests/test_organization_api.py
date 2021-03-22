@@ -25,6 +25,23 @@ def test_get_organization_detail(api_client):
     assert data['name'] == org.name
 
 
+def test_get_organization_by_github_id(api_client):
+    org = OrganizationFactory(github_id=12345)
+    url = f'/api/organizations/github_id/{org.github_id}/'
+    response = api_client.get(url)
+    assert response.status_code == 200
+    data = response.json()
+    assert data['name'] == org.name
+    assert data['github_id'] == 12345
+
+
+def test_get_organization_by_github_id_invalid_id(api_client):
+    org = OrganizationFactory()  # this org does not have a github_id
+    url = f'/api/organizations/github_id/999999/'
+    response = api_client.get(url)
+    assert response.status_code == 404
+
+
 def test_get_organization_detail_includes_links(api_client):
     org = OrganizationFactory()
     link1 = LinkFactory(organization=org)
