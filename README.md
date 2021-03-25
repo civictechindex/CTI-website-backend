@@ -17,11 +17,12 @@ tools this project uses. (Don't spend too long on these; just use them to get a 
 1. Clone this repository
 2. Get a copy of the initial data:
     - [Excel Sheet](https://drive.google.com/file/d/1xiLeyMwZc-n6eB1R_XdCJ00YrarfnR_w/view)
-    - Download as csv to the project root. In the steps below we refer to this file as `filename.csv`
+    - Download as csv to the project root. Make sure you choose the `CSV (Comma delimited) (*.csv)` option. In the steps below we refer to this file as `filename.csv`
+3. Install [PostgreSQL](https://www.postgresql.org/) if you haven't already.
 
 
 
-### Running this project on your machine with Docker
+#### Running this project on your machine with Docker
 
 1. Install Docker
 3. Create a .env file inside the `config` subdirectory. This .env file contains the the database credentials
@@ -45,12 +46,21 @@ tools this project uses. (Don't spend too long on these; just use them to get a 
     docker-compose exec web python manage.py import_initial_data filename.csv
     ```
 
-### Running this project directly on your machine (no containers)
+#### Running this project directly on your machine (no containers)
 
 1. Create and activate a [virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 2. Install the packages
 ``pip install -r requirements.txt``
-3. Execute the following steps
+3. Create a .env file inside the `config` subdirectory. This .env file contains the the database credentials
+   your project will use. The contents of your .env file should be the following:
+
+    ```
+    POSTGRES_NAME='postgres'
+    POSTGRES_PASSWORD='postgres'
+    POSTGRES_USER='postgres'
+    POSTGRES_HOST='localhost'
+    ```
+4. Execute the following steps
 
     ```
     python manage.py migrate
