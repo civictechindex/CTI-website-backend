@@ -6,10 +6,15 @@ from rest_framework.response import Response
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.pagination import PageNumberPagination
 
 from .serializers import OrganizationSerializer, LinkSerializer, FAQSerializer, NotificationSubscriptionSerializer, AliasSerializer
 from ..models import Organization, Link, FAQ, Alias
 
+class MediumResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 20
 
 class OrganizationViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = OrganizationSerializer
@@ -44,6 +49,7 @@ class FAQViewSet(ReadOnlyModelViewSet):
     queryset = FAQ.objects.filter(live=True).all().order_by('-view_count', 'question')
     filter_backends = [SearchFilter]
     search_fields = ['@question', '@answer']
+    pagination_class = MediumResultsSetPagination
 
     @action(detail=True, methods=['post'])
     def increment_count(self, request, pk=None):
