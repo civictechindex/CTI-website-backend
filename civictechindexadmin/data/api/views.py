@@ -8,7 +8,10 @@ from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.pagination import PageNumberPagination
 
-from .serializers import OrganizationSerializer, LinkSerializer, FAQSerializer, NotificationSubscriptionSerializer, AliasSerializer
+from .serializers import (
+    AddOrganizationSerializer, AliasSerializer, OrganizationSerializer, FAQSerializer,
+    LinkSerializer, NotificationSubscriptionSerializer,
+)
 from ..models import Organization, Link, FAQ, Alias
 
 class MediumResultsSetPagination(PageNumberPagination):
@@ -20,6 +23,18 @@ class OrganizationViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, 
     serializer_class = OrganizationSerializer
     queryset = Organization.objects.all()
     lookup_field = "name"
+
+
+@swagger_auto_schema(method='post', request_body=AddOrganizationSerializer)
+@api_view(['POST'])
+def create(request):
+    """
+    Create an organization with the associated links.
+    """
+    serializer = AddOrganizationSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @swagger_auto_schema(method='get')
@@ -82,17 +97,4 @@ def subscribe(request):
     serializer = NotificationSubscriptionSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save(ip_address=request.META["REMOTE_ADDR"])
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-@swagger_auto_schema(method='post', request_body=NotificationSubscriptionSerializer)
-@api_view(['POST'])
-def create_organization(request):
-    """
-    Create an organization with the associated links.
-    """
-    
-    serializer = AddOrganizationSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
     return Response(serializer.data, status=status.HTTP_201_CREATED)
