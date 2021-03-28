@@ -18,14 +18,11 @@ tools this project uses. (Don't spend too long on these; just use them to get a 
 2. Get a copy of the initial data:
     - [Excel Sheet](https://drive.google.com/file/d/1xiLeyMwZc-n6eB1R_XdCJ00YrarfnR_w/view)
     - Download as csv to the project root. Make sure you choose the `CSV (Comma delimited) (*.csv)` option. In the steps below we refer to this file as `filename.csv`
-3. Install [PostgreSQL](https://www.postgresql.org/) if you haven't already.
-
-
 
 #### Running this project on your machine with Docker
 
 1. Install Docker
-3. Create a .env file inside the `config` subdirectory. This .env file contains the the database credentials
+2. Create a .env file inside the `config` subdirectory. This .env file contains the the database credentials
    your project will use. The contents of your .env file should be the following:
 
     ```
@@ -35,7 +32,7 @@ tools this project uses. (Don't spend too long on these; just use them to get a 
     POSTGRES_HOST='db'
     ```
 
-4. Build and configure your docker container by running the following commands. Our `docker-compose.yaml` creates
+3. Build and configure your docker container by running the following commands. Our `docker-compose.yaml` creates
    a volume for persisting the database information so you will need to do the first step below each time you start
    working on this code but you should only have to run the migrations and load data the first time you create your containers.
 
@@ -49,9 +46,10 @@ tools this project uses. (Don't spend too long on these; just use them to get a 
 #### Running this project directly on your machine (no containers)
 
 1. Create and activate a [virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
-2. Install the packages
+2. Install [PostgreSQL](https://www.postgresql.org/) if you haven't already.
+3. Install the packages
 ``pip install -r requirements.txt``
-3. Create a .env file inside the `config` subdirectory. This .env file contains the the database credentials
+4. Create a .env file inside the `config` subdirectory. This .env file contains the the database credentials
    your project will use. The contents of your .env file should be the following:
 
     ```
@@ -60,7 +58,7 @@ tools this project uses. (Don't spend too long on these; just use them to get a 
     POSTGRES_USER='postgres'
     POSTGRES_HOST='localhost'
     ```
-4. Execute the following steps
+5. Execute the following steps
 
     ```
     python manage.py migrate
