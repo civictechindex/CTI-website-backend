@@ -52,3 +52,44 @@ class NotificationSubscriptionSerializer(serializers.Serializer):
             return NotificationSubscription.objects.create(**validated_data)
         except IntegrityError:
             raise ValidationError(detail=f"We already have a subscription for {validated_data['email_address']}")
+
+class AddOrganizationSerializer(serializers.Serializer):
+    organization_name = serializers.CharField()  # required
+    parent_organization = serializers.CharField(allow_blank=True)
+
+    website_url = serializers.URLField()  # required
+    github_url = serializers.URLField()  # required
+
+    facebook_url = serializers.URLField(allow_blank=True)
+    twitter_url = serializers.URLField(allow_blank=True)
+    meetup_url = serializers.URLField(allow_blank=True)
+
+    location = serializers.CharField(allow_blank=True)
+    github_tags = serializers.ChoiceField(allow_blank=True)
+    organization_email = serializers.CharField()  # required
+
+    def create(self, validated_data):
+        links = [
+            (Link.LINK_TYPE_CHOICES.WebSite, validated_data["website_url"]),
+            (Link.LINK_TYPE_CHOICES.GitHub, validated_data["github_url"]),
+            (Link.LINK_TYPE_CHOICES.FaceBook, validated_data["facebook_url"]),
+            (Link.LINK_TYPE_CHOICES.Twitter, validated_data["twitter_url"]),
+            (Link.LINK_TYPE_CHOICES.MeetUp, validated_data["meetup_url"]),
+        ]
+        try:
+            org = Organization.objects.create(
+                name=validated_data["organization_name"],
+                parent_organization=validated_data["parent_organization"],
+                location=validated_data["location"],
+                org_tag=validated_data["github_tags"],
+            )
+
+            for link_type, link in links:
+                if link:
+                    Link.objects.create(
+                        organization=org.import_id,
+                        link_type=link_type,
+                        url=link,
+                    )
+        except IntegrityError:
+            raise ValidationError(detail=f"We already have a organization for {validated_data['organization_name']}")
