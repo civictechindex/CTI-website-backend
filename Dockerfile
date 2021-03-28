@@ -1,18 +1,21 @@
-
 FROM python:3.8-slim-buster
 
 ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update \
-  # dependencies for building Python packages
-  && apt-get install -y build-essential procps \
-  # psycopg2 dependencies
-  && apt-get install -y libpq-dev libpq5 postgresql-client \
-  # Translations dependencies
-  && apt-get install -y gettext \
-  # cleaning up unused files
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y \
+ && apt-get install -y gnupg2 wget \
+ && wget --quiet -O /tmp/pg-repo.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+ && apt-key add /tmp/pg-repo.asc \
+ && echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >  /etc/apt/sources.list.d/pgdg.list \
+ && apt-get update -y \
+ && apt-get install -y libenchant-dev libpq-dev postgresql-client-12 \
+ # dependencies for building Python packages
+ && apt-get install -y build-essential procps \
+ # Translations dependencies
+ && apt-get install -y gettext \
+ # cleaning up unused files
+ && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+ && rm -rf /var/lib/apt/lists/*
 
 # create root directory for our project in the container
 RUN mkdir /code
@@ -24,11 +27,6 @@ WORKDIR /code
 ADD requirements.txt /code/
 
 RUN pip install --upgrade pip && pip install -r requirements.txt
-
-ENV POSTGRES_PASSWORD=
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_HOST=db
-ENV POSTGRES_NAME=postgres
 
 ADD . /code/
 EXPOSE 8000
