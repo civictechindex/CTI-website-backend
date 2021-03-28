@@ -1,30 +1,30 @@
 dj-database-url==0.5.0
-Django==3.1.5
+Django==3.1.7
 django-allauth==0.44.0
 django-anymail==8.2
 django-cors-headers==3.7.0
 django-coverage-plugin==1.8.0
-django-crispy-forms==1.11.0
+django-crispy-forms==1.11.2
 django-environ==0.4.5
 django-heroku==0.3.1
-djangorestframework==3.12.2
+djangorestframework==3.12.4
 drf-yasg==1.20.0
-gunicorn==20.0.4
+gunicorn==20.1.0
 oauthlib==3.1.0
 psycopg2==2.8.6
 PyYAML==5.4.1
-Sphinx==3.4.3
+Sphinx==3.5.3
 virtualenv==20.4.1
 whitenoise==5.2.0
 
 # development
 django-debug-toolbar==3.2
-django-extensions==3.1.0
+django-extensions==3.1.1
 flake8==3.8.4
 
 
 # testing tools
-coverage==5.4
+coverage==5.5
 django-coverage-plugin==1.8.0
 factory-boy==2.12.0
 Faker==4.1.1
@@ -33,4 +33,4 @@ pytest-cov
 pytest-django ~= 3.9
 pytest-sugar ~= 0.9
 pytest-xdist ~= 2.1
-pytz==2020.1
+pytz==2021.1
