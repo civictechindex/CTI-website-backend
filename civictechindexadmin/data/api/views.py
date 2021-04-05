@@ -1,43 +1,47 @@
 from django.db.models import F
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action, api_view
+from rest_framework.exceptions import NotFound
 from rest_framework.filters import SearchFilter
-from rest_framework.response import Response
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
-from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet, ViewSet
 
 from .serializers import (
-    AddOrganizationSerializer, AliasSerializer, OrganizationSerializer, FAQSerializer,
-    LinkSerializer, NotificationSubscriptionSerializer,
+    AddOrganizationSerializer, AliasSerializer, OrganizationSerializer, OrganizationFullSerializer,
+    FAQSerializer, LinkSerializer, NotificationSubscriptionSerializer,
 )
 from ..models import Organization, Link, FAQ, Alias
 
-class MediumResultsSetPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 20
 
-class OrganizationViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet):
-    serializer_class = OrganizationSerializer
-    queryset = Organization.objects.all()
-    lookup_field = "name"
+class OrganizationViewSet(ViewSet):
+    @swagger_auto_schema(responses={200: OrganizationSerializer(many=True)})
+    def list(self, request):
+        queryset = Organization.objects.all()
+        serializer = OrganizationSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @swagger_auto_schema(responses={200: OrganizationFullSerializer()})
+    def retrieve(self, request, pk=None):
+        org = Organization.objects.filter(name=pk).prefetch_related('links').first()
+        if not org:
+            raise NotFound(f"No organization by the name of '{pk}'")
+        serializer = OrganizationFullSerializer(org)
+        return Response(serializer.data)
+
+    @swagger_auto_schema(responses={201: OrganizationFullSerializer()})
+    def create(self, request):
+        serializer = AddOrganizationSerializer(data=request.data)
+        if serializer.is_valid():
+            new_org = serializer.create()
+            return Response(OrganizationFullSerializer(new_org).data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@swagger_auto_schema(method='post', request_body=AddOrganizationSerializer)
-@api_view(['POST'])
-def create(request):
-    """
-    Create an organization with the associated links.
-    """
-    serializer = AddOrganizationSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-@swagger_auto_schema(method='get')
+@swagger_auto_schema(method='get', responses={200: OrganizationFullSerializer()})
 @api_view(['GET'])
 def org_by_github_id(request, github_id):
     try:
@@ -45,13 +49,22 @@ def org_by_github_id(request, github_id):
     except Organization.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = OrganizationSerializer(org)
+    serializer = OrganizationFullSerializer(org)
     return Response(serializer.data)
 
 
 class LinkViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = LinkSerializer
     queryset = Link.objects.all()
+
+
+class MediumResultsSetPagination(PageNumberPagination):
+    """
+    Helper class for pagination settings.
+    """
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 20
 
 
 class FAQViewSet(ReadOnlyModelViewSet):

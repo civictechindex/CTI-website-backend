@@ -5,6 +5,13 @@ from rest_framework.exceptions import ValidationError
 from ..models import Organization, Link, FAQ, NotificationSubscription, Alias
 
 
+class LinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Link
+        fields = ['id', 'link_type', 'url', ]
+        depth = 1
+
+
 class ParentOrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
@@ -13,46 +20,59 @@ class ParentOrganizationSerializer(serializers.ModelSerializer):
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
-    parent_organization = ParentOrganizationSerializer(many=False, read_only=True)
+    links = LinkSerializer(many=True, read_only=True)
 
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'github_name', 'github_id', 'location', 'image_url', 'links', 'parent_organization', 'cti_contributor', 'org_tag']
+        fields = ['id', 'name', 'github_name', 'github_id', 'location',
+                  'image_url', 'links', 'cti_contributor', 'org_tag']
+
+
+class OrganizationFullSerializer(serializers.ModelSerializer):
+    parent_organization = ParentOrganizationSerializer(many=False, read_only=True)
+    links = LinkSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Organization
+        fields = ['id', 'name', 'github_name', 'github_id', 'location',
+                  'image_url', 'links', 'parent_organization', 'cti_contributor', 'org_tag']
         depth = 1
 
 
 class AddOrganizationSerializer(serializers.Serializer):
-    name = serializers.CharField()  # required
-    parent_organization = serializers.CharField(allow_blank=True)
+    name = serializers.CharField(max_length=256)  # required
+    parent_organization_id = serializers.ChoiceField(
+        choices=[(o.id, o.name) for o in Organization.objects.all()],
+        required=False)
 
-    website_url = serializers.URLField()  # required
-    github_url = serializers.URLField()  # required
+    website_url = serializers.URLField(max_length=1024, required=False)
+    github_url = serializers.URLField(max_length=1024)  # required
+    facebook_url = serializers.URLField(max_length=1024, required=False)
+    twitter_url = serializers.URLField(max_length=1024, required=False)
+    meetup_url = serializers.URLField(max_length=1024, required=False)
 
-    facebook_url = serializers.URLField(allow_blank=True)
-    twitter_url = serializers.URLField(allow_blank=True)
-    meetup_url = serializers.URLField(allow_blank=True)
+    location = serializers.CharField(max_length=1024)
+    org_tag = serializers.CharField(max_length=128)
+    organization_email = serializers.EmailField(max_length=128)  # required - but not in our data model
 
-    location = serializers.CharField(allow_blank=True)  # Form will be sending this as city, state, country
-    org_tag = serializers.CharField(allow_blank=True)
-    organization_email = serializers.CharField()  # required - but not in our data model
-
-    def create(self, validated_data):
+    def create(self):
+        validated_data = self.validated_data
         links = [
-            (Link.LINK_TYPE_CHOICES.WebSite, validated_data["website_url"]),
-            (Link.LINK_TYPE_CHOICES.GitHub, validated_data["github_url"]),
-            (Link.LINK_TYPE_CHOICES.FaceBook, validated_data["facebook_url"]),
-            (Link.LINK_TYPE_CHOICES.Twitter, validated_data["twitter_url"]),
-            (Link.LINK_TYPE_CHOICES.MeetUp, validated_data["meetup_url"]),
+            ('WebSite', validated_data.get('website_url')),
+            ('GitHub', validated_data.get('github_url')),
+            ('FaceBook', validated_data.get('facebook_url')),
+            ('Twitter', validated_data.get('twitter_url')),
+            ('MeetUp', validated_data.get('meetup_url')),
         ]
         try:
             org = Organization.objects.create(
                 name=validated_data["name"],
-                parent_organization=validated_data["parent_organization"],
-                location=validated_data["location"],
-                org_tag=validated_data["org_tag"],
+                parent_organization_id=validated_data.get("parent_organization_id", None),
+                location=validated_data['location'],
+                org_tag=validated_data['org_tag'],
             )
-        except IntegrityError:
-            raise ValidationError(detail=f"We already have a organization for {validated_data['organization_name']}")
+        except IntegrityError as e:
+            raise ValidationError(detail=e)
 
         for link_type, link in links:
             if link:
@@ -61,13 +81,7 @@ class AddOrganizationSerializer(serializers.Serializer):
                     link_type=link_type,
                     url=link,
                 )
-
-
-class LinkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Link
-        fields = ['id', 'link_type', 'url', 'organization', ]
-        depth = 1
+        return org
 
 
 class FAQSerializer(serializers.ModelSerializer):
@@ -83,6 +97,7 @@ class AliasSerializer(serializers.ModelSerializer):
         fields = ['id', 'tag', 'alias', ]
         depth = 1
 
+
 class NotificationSubscriptionSerializer(serializers.Serializer):
     email_address = serializers.EmailField()
     notification_type = serializers.CharField()
@@ -94,4 +109,3 @@ class NotificationSubscriptionSerializer(serializers.Serializer):
             return NotificationSubscription.objects.create(**validated_data)
         except IntegrityError:
             raise ValidationError(detail=f"We already have a subscription for {validated_data['email_address']}")
-

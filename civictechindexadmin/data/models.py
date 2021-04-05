@@ -89,6 +89,7 @@ class NotificationSubscription(models.Model):
     class Meta:
         unique_together = [['notification_type', 'email_address']]
 
+
 # ###### Alias ###########
 class Alias(models.Model):
     tag = models.CharField(max_length=30)
