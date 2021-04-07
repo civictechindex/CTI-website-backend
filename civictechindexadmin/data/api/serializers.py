@@ -10,14 +10,15 @@ class ParentOrganizationSerializer(serializers.ModelSerializer):
         model = Organization
         fields = ['id', 'name', 'org_tag', 'cti_contributor', 'parent_organization']
         depth = 1
-		
-		
+
+
 class OrganizationSerializer(serializers.ModelSerializer):
     parent_organization = ParentOrganizationSerializer(many=False, read_only=True)
 
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'github_name', 'github_id', 'location', 'image_url', 'links', 'parent_organization', 'cti_contributor', 'org_tag']
+        fields = ['id', 'name', 'github_name', 'github_id', 'image_url',
+                  'links', 'parent_organization', 'cti_contributor', 'org_tag']
         depth = 1
 
 
@@ -40,6 +41,7 @@ class AliasSerializer(serializers.ModelSerializer):
         model = Alias
         fields = ['id', 'tag', 'alias', ]
         depth = 1
+
 
 class NotificationSubscriptionSerializer(serializers.Serializer):
     email_address = serializers.EmailField()
