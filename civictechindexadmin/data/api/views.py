@@ -19,13 +19,13 @@ from ..models import Organization, Link, FAQ, Alias
 class OrganizationViewSet(ViewSet):
     @swagger_auto_schema(responses={200: OrganizationSerializer(many=True)})
     def list(self, request):
-        queryset = Organization.objects.all()
+        queryset = Organization.objects.filter(status='approved').all()
         serializer = OrganizationSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: OrganizationFullSerializer()})
     def retrieve(self, request, pk=None):
-        org = Organization.objects.filter(name=pk).prefetch_related('links').first()
+        org = Organization.objects.filter(name=pk, status='approved').prefetch_related('links').first()
         if not org:
             raise NotFound(f"No organization by the name of '{pk}'")
         serializer = OrganizationFullSerializer(org)
