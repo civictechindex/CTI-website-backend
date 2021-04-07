@@ -15,7 +15,6 @@ def forwards(apps, schema_editor):
         match = re.match(r'https://github.com/(.*)', link.url)
         if match:
             name = match[1].replace('/', '')
-            print(name)
             link.organization.github_name = name
             link.organization.save()
 

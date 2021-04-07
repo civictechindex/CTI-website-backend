@@ -11,7 +11,6 @@ def test_get_organizations(api_client):
     assert resolve(url).url_name == 'organization-list'
     response = api_client.get(url)
     assert response.status_code == 200
-    print(response.json())
     assert len(response.json()) == 0
 
 
