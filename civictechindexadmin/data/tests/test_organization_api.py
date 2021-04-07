@@ -1,6 +1,7 @@
 import pytest
 from django.urls import resolve
 
+from ..models import Organization
 from .factories import LinkFactory, OrganizationFactory
 
 pytestmark = pytest.mark.django_db
@@ -98,13 +99,12 @@ def test_create_organization(api_client):
     _check_response(data, input_data)
 
 
-@pytest.mark.xfail
 def test_create_organization_with_parent(api_client):
     """Adding an org with a parent works in Postman but this test says the org id is invalid.               s """
     parent_org = OrganizationFactory.create(name='Code for All', github_id=12345)
     url = '/api/organizations/'
     input_data = _creation_data()
-    input_data['parent_organization_id'] = parent_org.id
+    input_data['parent_organization'] = parent_org.id
 
     response = api_client.post(url, input_data)
     assert response.status_code == 201
