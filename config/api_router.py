@@ -14,7 +14,7 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-router.register("organizations", OrganizationViewSet)
+router.register("organizations", OrganizationViewSet, basename="organization")
 router.register("links", LinkViewSet)
 router.register("faqs", FAQViewSet)
 router.register("aliases", AliasViewSet)
@@ -23,5 +23,5 @@ urlpatterns = router.urls
 
 urlpatterns += [
     path('subscribe/', subscribe),
-    path('organizations/github_id/<int:github_id>/' , org_by_github_id)
+    path('organizations/github_id/<int:github_id>/', org_by_github_id)
 ]
