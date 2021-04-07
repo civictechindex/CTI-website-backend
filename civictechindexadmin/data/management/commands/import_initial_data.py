@@ -23,7 +23,7 @@ class Command(BaseCommand):
     def _create_organization(self, row):
         org, created = Organization.objects.get_or_create(name=row['organization_name'])
         org.import_id = row['ID']
-        org.location = row['location']
+        # org.location = row['location']
         org.image_url = row['image_url']
         if row['ParentID']:
             parent = Organization.objects.filter(import_id=row['ParentID']).first()
