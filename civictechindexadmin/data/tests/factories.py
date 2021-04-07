@@ -28,6 +28,8 @@ class OrganizationFactory(DjangoModelFactory):
         django_get_or_create = ["name"]
 
     name = Sequence(lambda n: "Open Thing %d" % n)
+    # This is most useful if we get usable Organizations by default
+    status = 'approved'
 
 
 # NOTE to use this you must instantiate with he related Organization

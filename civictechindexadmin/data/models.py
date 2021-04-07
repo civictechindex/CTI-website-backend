@@ -3,6 +3,12 @@ from django.db import models
 
 
 class Organization(models.Model):
+    ORG_STATE_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied'),
+    ]
+
     import_id = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=256)
     parent_organization = models.ForeignKey('self',
@@ -15,9 +21,14 @@ class Organization(models.Model):
     image_url = models.URLField(max_length=2048, blank=True)
     github_name = models.CharField(max_length=1024, blank=True)
     github_id = models.IntegerField(blank=True, null=True)
-    cti_contributor = models.NullBooleanField(blank=True, default=None)
+    cti_contributor = models.BooleanField(blank=True, default=False)
     org_tag = models.CharField(max_length=128, blank=True)
+    # Organization email is the email collected when someone submits an org
+    # through the tag generator. It is not a general contact email for the org
     organization_email = models.EmailField(max_length=256, blank=True)
+    status = models.CharField(max_length=32,
+                              choices=ORG_STATE_CHOICES,
+                              default='submitted')
 
     def __str__(self):
         return f"Org: {self.name}"

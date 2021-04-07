@@ -20,13 +20,10 @@ class ParentOrganizationSerializer(serializers.ModelSerializer):
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
-    links = LinkSerializer(many=True, read_only=True)
-
     class Meta:
         model = Organization
         fields = ['id', 'name', 'github_name', 'github_id', 'image_url',
-                  'city', 'state', 'country', 'cti_contributor', 'org_tag',
-                  'organization_email', ]
+                  'city', 'state', 'country', 'cti_contributor', 'org_tag', ]
 
 
 class OrganizationFullSerializer(serializers.ModelSerializer):
@@ -37,7 +34,7 @@ class OrganizationFullSerializer(serializers.ModelSerializer):
         model = Organization
         fields = ['id', 'name', 'github_name', 'github_id', 'image_url',
                   'city', 'state', 'country', 'cti_contributor', 'org_tag',
-                  'organization_email', 'links', 'parent_organization', ]
+                  'links', 'parent_organization', ]
         depth = 1
 
 

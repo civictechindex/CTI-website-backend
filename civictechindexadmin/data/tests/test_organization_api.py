@@ -8,11 +8,16 @@ pytestmark = pytest.mark.django_db
 
 
 def test_get_organizations(api_client):
+    approved_org = OrganizationFactory(name='Yup', status='approved')
+    denied_org = OrganizationFactory(name='Nope', status='denied')  # noqa
+    submitted_org = OrganizationFactory(name='Maybe', status='submitted')  # noqa
     url = '/api/organizations/'
     assert resolve(url).url_name == 'organization-list'
     response = api_client.get(url)
     assert response.status_code == 200
-    assert len(response.json()) == 0
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]['name'] == approved_org.name
 
 
 def test_get_organization_detail(api_client):
@@ -22,6 +27,21 @@ def test_get_organization_detail(api_client):
     assert response.status_code == 200
     data = response.json()
     assert data['name'] == org.name
+
+
+def test_get_org_detail_does_not_show_submitted(api_client):
+    org = OrganizationFactory(status='submitted')
+    url = f'/api/organizations/{org.name}/'
+    response = api_client.get(url)
+    assert response.status_code == 404
+
+
+def test_get_org_detail_does_not_show_denied(api_client):
+    org = OrganizationFactory(name='Evil', status='denied')
+    url = f'/api/organizations/{org.name}/'
+    response = api_client.get(url)
+    assert response.status_code == 404
+    assert response.json()['detail'] == "No organization by the name of 'Evil'"
 
 
 def test_get_organization_by_github_id(api_client):
@@ -85,7 +105,6 @@ def _check_response(response, input_data):
     assert response['state'] == input_data['state']
     assert response['country'] == input_data['country']
     assert response['org_tag'] == input_data['org_tag']
-    assert response['organization_email'] == input_data['organization_email']
     assert len(response['links']) == 1
     assert input_data['github_url'] in [link['url'] for link in response['links']]
 
@@ -112,3 +131,18 @@ def test_create_organization_with_parent(api_client):
     _check_response(data, input_data)
     assert data['parent_organization']['id'] == parent_org.id
     assert data['parent_organization']['name'] == parent_org.name
+
+
+def test_organization_created_with_status_submitted(api_client):
+    """
+    This test checks the fields that are created when posting to
+    AddOrganizationSerializer but are not returned in the JSON response.
+    """
+    url = '/api/organizations/'
+    input_data = _creation_data()
+    response = api_client.post(url, input_data)
+    assert response.status_code == 201
+    data = response.json()
+    new_org = Organization.objects.get(pk=data['id'])
+    assert new_org.status == 'submitted'
+    assert new_org.organization_email == input_data['organization_email']
