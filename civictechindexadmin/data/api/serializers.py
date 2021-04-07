@@ -43,9 +43,8 @@ class OrganizationFullSerializer(serializers.ModelSerializer):
 
 class AddOrganizationSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=256)  # required
-    parent_organization_id = serializers.ChoiceField(
-        choices=[(o.id, o.name) for o in Organization.objects.all()],
-        required=False)
+    parent_organization = serializers.PrimaryKeyRelatedField(
+        queryset=Organization.objects.all(), required=False)
 
     website_url = serializers.URLField(max_length=1024, required=False)
     github_url = serializers.URLField(max_length=1024)  # required
@@ -71,7 +70,7 @@ class AddOrganizationSerializer(serializers.Serializer):
         try:
             org = Organization.objects.create(
                 name=validated_data["name"],
-                parent_organization_id=validated_data.get("parent_organization_id", None),
+                parent_organization=validated_data.get("parent_organization", None),
                 city=validated_data.get('city', None),
                 state=validated_data.get('state', None),
                 country=validated_data.get('country', None),
