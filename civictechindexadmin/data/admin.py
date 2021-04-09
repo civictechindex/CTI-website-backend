@@ -1,7 +1,13 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Organization, Link, FAQ, NotificationSubscription, Alias
+from .models import Alias, FAQ, Link, NotificationSubscription, Organization
 from .status_code_filter import StatusCodeFilter
+
+
+class LinkInline(admin.TabularInline):
+    model = Link
+    extra = 0
+    fields = ('link_type', 'url', )
 
 
 class OrganizationAdmin(admin.ModelAdmin):
@@ -10,6 +16,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     list_display_links = ('name', )
     list_filter = ('status', 'cti_contributor')
     search_fields = ('name', )
+    inlines = [LinkInline]
 
 
 class LinkAdmin(admin.ModelAdmin):
