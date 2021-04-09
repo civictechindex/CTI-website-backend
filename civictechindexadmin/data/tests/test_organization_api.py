@@ -2,7 +2,7 @@ import pytest
 from django.urls import resolve
 
 from ..models import Organization
-from .factories import LinkFactory, OrganizationFactory
+from .factories import AliasFactory, LinkFactory, OrganizationFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -73,6 +73,19 @@ def test_get_organization_detail_includes_links(api_client):
     assert len(data['links']) == 2
     assert link1.url in [link['url'] for link in data['links']]
     assert link2.url in [link['url'] for link in data['links']]
+
+
+def test_get_organization_detail_includes_aliases(api_client):
+    org = OrganizationFactory(org_tag='code-for-somewhere')
+    AliasFactory(tag='code-for-somewhere', alias='code4somewhere')
+    AliasFactory(tag='code-for-somewhere', alias='codeforsomewhere')
+    url = f'/api/organizations/{org.name}/'
+    response = api_client.get(url)
+    assert response.status_code == 200
+    data = response.json()
+    assert data['name'] == org.name
+    assert data['org_tag'] == org.org_tag
+    assert sorted(data['aliases']) == ['code4somewhere', 'codeforsomewhere']
 
 
 def test_create_organization_required_fields(api_client):

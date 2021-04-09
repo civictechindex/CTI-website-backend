@@ -1,7 +1,7 @@
 from django.conf import settings
 from factory import DjangoModelFactory, Iterator, Sequence, SubFactory
 
-from ..models import FAQ, Link, Organization
+from ..models import Alias, FAQ, Link, Organization
 
 
 class UserFactory(DjangoModelFactory):
@@ -40,3 +40,11 @@ class LinkFactory(DjangoModelFactory):
 
     link_type = Iterator(['WebSite', 'MeetUp', 'FaceBook', 'Twitter', 'GitHub'])
     url = Sequence(lambda n: "https://example.com/%d" % n)
+
+
+class AliasFactory(DjangoModelFactory):
+    class Meta:
+        model = Alias
+
+    tag = Sequence(lambda n: "tag_%d" % n)
+    alias = Sequence(lambda n: "alias_%d" % n)

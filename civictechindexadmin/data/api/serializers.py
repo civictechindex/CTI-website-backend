@@ -29,13 +29,17 @@ class OrganizationSerializer(serializers.ModelSerializer):
 class OrganizationFullSerializer(serializers.ModelSerializer):
     parent_organization = ParentOrganizationSerializer(many=False, read_only=True)
     links = LinkSerializer(many=True, read_only=True)
+    aliases = serializers.SerializerMethodField()
 
     class Meta:
         model = Organization
         fields = ['id', 'name', 'github_name', 'github_id', 'image_url',
                   'city', 'state', 'country', 'cti_contributor', 'org_tag',
-                  'links', 'parent_organization', ]
+                  'aliases', 'links', 'parent_organization', ]
         depth = 1
+
+    def get_aliases(self, org):
+        return [a.alias for a in Alias.objects.filter(tag=org.org_tag).all()]
 
 
 class AddOrganizationSerializer(serializers.Serializer):
