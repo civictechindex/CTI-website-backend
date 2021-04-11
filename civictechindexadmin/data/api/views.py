@@ -20,7 +20,7 @@ class OrganizationViewSet(ViewSet):
     @swagger_auto_schema(responses={200: OrganizationSerializer(many=True)})
     def list(self, request):
         queryset = Organization.objects.filter(status='approved').all()
-        serializer = OrganizationSerializer(queryset, many=True)
+        serializer = OrganizationFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: OrganizationFullSerializer()})
