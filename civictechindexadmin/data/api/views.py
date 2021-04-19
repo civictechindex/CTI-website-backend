@@ -13,19 +13,28 @@ from .serializers import (
     AddOrganizationSerializer, AliasSerializer, OrganizationSerializer, OrganizationFullSerializer,
     FAQSerializer, LinkSerializer, NotificationSubscriptionSerializer,
 )
-from ..models import Organization2, Link2, FAQ, Alias
+from ..models import Organization, Link, FAQ, Alias
 
 
 class OrganizationViewSet(ViewSet):
     @swagger_auto_schema(responses={200: OrganizationSerializer(many=True)})
     def list(self, request):
-        queryset = Organization2.objects.filter(status='approved', depth__gt=1).all()
+        """
+        Returns all organizations that are approved for showing on this web site.
+        Items are returned as a tree - ordered alphabetically within their level.
+        """
+        queryset = Organization.objects.filter(status='approved', depth__gt=1).all()
         serializer = OrganizationFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: OrganizationFullSerializer()})
     def retrieve(self, request, pk=None):
-        org = Organization2.objects.filter(name=pk, status='approved').prefetch_related('links').first()
+        """
+        Returns all the information we know about a single organization.
+        The current version uses the organization's name as the lookup key
+        but we may want to change that to use a sluggified version of the name.
+        """
+        org = Organization.objects.filter(slug=pk, status='approved').prefetch_related('links').first()
         if not org:
             raise NotFound(f"No organization by the name of '{pk}'")
         serializer = OrganizationFullSerializer(org)
@@ -33,6 +42,12 @@ class OrganizationViewSet(ViewSet):
 
     @swagger_auto_schema(responses={201: AddOrganizationSerializer()})
     def create(self, request):
+        """
+        Create a new organiztion as part of the tag generator workflow.
+        This endpoint will return the created organization's record but the
+        data will not be available in the list or retrieve views until the
+        new record is approved.
+        """
         serializer = AddOrganizationSerializer(data=request.data)
         if serializer.is_valid():
             new_org = serializer.create()
@@ -45,8 +60,8 @@ class OrganizationViewSet(ViewSet):
 @api_view(['GET'])
 def org_by_github_id(request, github_id):
     try:
-        org = Organization2.objects.get(github_id=github_id)
-    except Organization2.DoesNotExist:
+        org = Organization.objects.get(github_id=github_id)
+    except Organization.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     serializer = OrganizationFullSerializer(org)
@@ -55,7 +70,7 @@ def org_by_github_id(request, github_id):
 
 class LinkViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     serializer_class = LinkSerializer
-    queryset = Link2.objects.all()
+    queryset = Link.objects.all()
 
 
 class MediumResultsSetPagination(PageNumberPagination):

@@ -1,6 +1,8 @@
 FROM python:3.8-slim-buster
 
 ENV PYTHONUNBUFFERED 1
+# Disable writing .pyc files - but only during docker build
+ARG PYTHONDONTWRITEBYTECODE=1
 
 RUN apt-get update -y \
  && apt-get install -y gnupg2 wget \

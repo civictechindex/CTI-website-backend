@@ -1,17 +1,18 @@
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
 from treebeard.mp_tree import MP_Node
 
 
-class Organization2(MP_Node):
+class Organization(MP_Node):
     ORG_STATE_CHOICES = [
         ('submitted', 'Submitted'),
         ('approved', 'Approved'),
         ('denied', 'Denied'),
     ]
 
-    name = models.CharField(max_length=256)
-    import_id = models.IntegerField(blank=True, null=True)
+    name = models.CharField(max_length=256, unique=True)
+    slug = models.SlugField(max_length=256, blank=True, unique=True)
     city = models.CharField(max_length=256, blank=True)
     state = models.CharField(max_length=256, blank=True)
     country = models.CharField(max_length=256, blank=True)
@@ -27,68 +28,15 @@ class Organization2(MP_Node):
                               choices=ORG_STATE_CHOICES,
                               default='submitted')
 
+    # Treebeard will store nodes in alphabetic order based on name
     node_order_by = ['name']
 
     def __str__(self):
         return f"Org: {self.name}"
 
-
-class Link2(models.Model):
-    LINK_TYPE_CHOICES = [
-        ('WebSite', 'WebSite'),
-        ('MeetUp', 'MeetUp'),
-        ('FaceBook', 'FaceBook'),
-        ('Twitter', 'Twitter'),
-        ('GitHub', 'GitHub'),
-    ]
-
-    organization = models.ForeignKey(Organization2,
-                                     related_name='links',
-                                     on_delete=models.CASCADE)
-    link_type = models.CharField(max_length=200,
-                                 choices=LINK_TYPE_CHOICES)
-    url = models.CharField(max_length=1024)
-    http_status = models.CharField(max_length=8, null=True, blank=True)
-    http_status_date = models.DateField(null=True, blank=True)
-    notes = models.TextField(max_length=4096, null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.link_type}: {self.url}"
-
-    class Meta:
-        unique_together = [['organization', 'link_type']]
-
-
-class Organization(models.Model):
-    ORG_STATE_CHOICES = [
-        ('submitted', 'Submitted'),
-        ('approved', 'Approved'),
-        ('denied', 'Denied'),
-    ]
-
-    import_id = models.IntegerField(blank=True, null=True)
-    name = models.CharField(max_length=256)
-    parent_organization = models.ForeignKey('self',
-                                            null=True,
-                                            blank=True,
-                                            on_delete=models.SET_NULL)
-    city = models.CharField(max_length=512, blank=True)
-    state = models.CharField(max_length=512, blank=True)
-    country = models.CharField(max_length=512, blank=True)
-    image_url = models.URLField(max_length=2048, blank=True)
-    github_name = models.CharField(max_length=1024, blank=True)
-    github_id = models.IntegerField(blank=True, null=True)
-    cti_contributor = models.BooleanField(blank=True, default=False)
-    org_tag = models.CharField(max_length=128, blank=True)
-    # Organization email is the email collected when someone submits an org
-    # through the tag generator. It is not a general contact email for the org
-    organization_email = models.EmailField(max_length=256, blank=True)
-    status = models.CharField(max_length=32,
-                              choices=ORG_STATE_CHOICES,
-                              default='submitted')
-
-    def __str__(self):
-        return f"Org: {self.name}"
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 class Link(models.Model):
@@ -112,6 +60,21 @@ class Link(models.Model):
 
     def __str__(self):
         return f"{self.link_type}: {self.url}"
+
+    class Meta:
+        unique_together = [['organization', 'link_type']]
+
+
+class Alias(models.Model):
+    tag = models.CharField(max_length=30)
+    alias = models.CharField(max_length=30)
+
+    class Meta:
+        verbose_name = "Alias"
+        verbose_name_plural = "Aliases"
+
+    def __str__(self):
+        return f"Alias {self.id}: {self.tag} {self.alias}"
 
 
 # ###### FAQS ###########
@@ -144,6 +107,10 @@ class FAQ(models.Model):
         on_delete=models.CASCADE
     )
 
+    class Meta:
+        verbose_name = "FAQ"
+        verbose_name_plural = "FAQs"
+
     def __str__(self):
         return f"FAQ {self.id}: {self.question}"
 
@@ -158,12 +125,3 @@ class NotificationSubscription(models.Model):
 
     class Meta:
         unique_together = [['notification_type', 'email_address']]
-
-
-# ###### Alias ###########
-class Alias(models.Model):
-    tag = models.CharField(max_length=30)
-    alias = models.CharField(max_length=30)
-
-    def __str__(self):
-        return f"Alias {self.id}: {self.tag} {self.alias}"

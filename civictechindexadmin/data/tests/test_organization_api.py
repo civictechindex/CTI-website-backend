@@ -1,7 +1,8 @@
 import pytest
 from django.urls import resolve
+from django.utils.text import slugify
 
-from ..models import Organization2
+from ..models import Organization
 from .factories import AliasFactory, LinkFactory, OrganizationFactory
 
 pytestmark = pytest.mark.django_db
@@ -20,28 +21,34 @@ def test_get_organizations(api_client):
     assert data[0]['name'] == approved_org.name
 
 
-def test_get_organization_detail(api_client):
-    org = OrganizationFactory()
-    url = f'/api/organizations/{org.name}/'
+def _get_org_detail_page(api_client, org):
+    """Helper method to dry up repeated calls to org detail page"""
+    url = f'/api/organizations/{org.slug}/'
     response = api_client.get(url)
     assert response.status_code == 200
-    data = response.json()
+    return response.json()
+
+
+def test_get_organization_detail(api_client):
+    org = OrganizationFactory()
+    data = _get_org_detail_page(api_client, org)
     assert data['name'] == org.name
+    assert data['slug'] == slugify(org.name)
 
 
 def test_get_org_detail_does_not_show_submitted(api_client):
     org = OrganizationFactory(status='submitted')
-    url = f'/api/organizations/{org.name}/'
+    url = f'/api/organizations/{org.slug}/'
     response = api_client.get(url)
     assert response.status_code == 404
 
 
 def test_get_org_detail_does_not_show_denied(api_client):
     org = OrganizationFactory(name='Evil', status='denied')
-    url = f'/api/organizations/{org.name}/'
+    url = f'/api/organizations/{org.slug}/'
     response = api_client.get(url)
     assert response.status_code == 404
-    assert response.json()['detail'] == "No organization by the name of 'Evil'"
+    assert response.json()['detail'] == "No organization by the name of 'evil'"
 
 
 def test_get_organization_by_github_id(api_client):
@@ -65,10 +72,7 @@ def test_get_organization_detail_includes_links(api_client):
     org = OrganizationFactory()
     link1 = LinkFactory(organization=org)
     link2 = LinkFactory(organization=org)
-    url = f'/api/organizations/{org.name}/'
-    response = api_client.get(url)
-    assert response.status_code == 200
-    data = response.json()
+    data = _get_org_detail_page(api_client, org)
     assert data['name'] == org.name
     assert len(data['links']) == 2
     assert link1.url in [link['url'] for link in data['links']]
@@ -79,10 +83,7 @@ def test_get_organization_detail_includes_aliases(api_client):
     org = OrganizationFactory(org_tag='code-for-somewhere')
     AliasFactory(tag='code-for-somewhere', alias='code4somewhere')
     AliasFactory(tag='code-for-somewhere', alias='codeforsomewhere')
-    url = f'/api/organizations/{org.name}/'
-    response = api_client.get(url)
-    assert response.status_code == 200
-    data = response.json()
+    data = _get_org_detail_page(api_client, org)
     assert data['name'] == org.name
     assert data['org_tag'] == org.org_tag
     assert sorted(data['aliases']) == ['code4somewhere', 'codeforsomewhere']
@@ -124,7 +125,7 @@ def _check_response(response, input_data):
 
 def test_create_organization(api_client):
     # we need to creat a root (even if we don't pass it in the request)
-    root = Organization2.add_root(name='Root')
+    root = Organization.add_root(name='Root')
     url = '/api/organizations/'
     input_data = _creation_data()
     response = api_client.post(url, input_data)
@@ -157,12 +158,12 @@ def test_organization_created_with_status_submitted(api_client):
     AddOrganizationSerializer but are not returned in the JSON response.
     """
     # we need to creat a root (even if we don't pass it in the request)
-    Organization2.add_root(name='Root')
+    Organization.add_root(name='Root')
     url = '/api/organizations/'
     input_data = _creation_data()
     response = api_client.post(url, input_data)
     assert response.status_code == 201
     data = response.json()
-    new_org = Organization2.objects.get(pk=data['id'])
+    new_org = Organization.objects.get(pk=data['id'])
     assert new_org.status == 'submitted'
     assert new_org.organization_email == input_data['organization_email']
