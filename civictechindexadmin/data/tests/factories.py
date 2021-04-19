@@ -1,7 +1,7 @@
 from django.conf import settings
 from factory import DjangoModelFactory, Iterator, Sequence, SubFactory
 
-from ..models import Alias, FAQ, Link, Organization
+from ..models import Alias, FAQ, Link2, Organization2
 
 
 class UserFactory(DjangoModelFactory):
@@ -24,18 +24,30 @@ class FAQFactory(DjangoModelFactory):
 
 class OrganizationFactory(DjangoModelFactory):
     class Meta:
-        model = Organization
+        model = Organization2
         django_get_or_create = ["name"]
 
     name = Sequence(lambda n: "Open Thing %d" % n)
     # This is most useful if we get usable Organizations by default
     status = 'approved'
 
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        """Override the default ``_create``to incorporate add_child."""
+        if 'parent' in kwargs.values():
+            parent = kwargs['parent']
+        elif model_class.get_first_root_node():
+            parent = model_class.get_first_root_node()
+        else:
+            parent = model_class.add_root(name='Root')
+        obj = model_class(**kwargs)
+        return parent.add_child(instance=obj)
 
-# NOTE to use this you must instantiate with he related Organization
+
+# NOTE to use this you must instantiate with the related Organization
 class LinkFactory(DjangoModelFactory):
     class Meta:
-        model = Link
+        model = Link2
         django_get_or_create = ["url"]
 
     link_type = Iterator(['WebSite', 'MeetUp', 'FaceBook', 'Twitter', 'GitHub'])

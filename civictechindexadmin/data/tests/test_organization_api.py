@@ -1,7 +1,7 @@
 import pytest
 from django.urls import resolve
 
-from ..models import Organization
+from ..models import Organization2
 from .factories import AliasFactory, LinkFactory, OrganizationFactory
 
 pytestmark = pytest.mark.django_db
@@ -123,12 +123,17 @@ def _check_response(response, input_data):
 
 
 def test_create_organization(api_client):
+    # we need to creat a root (even if we don't pass it in the request)
+    root = Organization2.add_root(name='Root')
     url = '/api/organizations/'
     input_data = _creation_data()
     response = api_client.post(url, input_data)
     assert response.status_code == 201
     data = response.json()
     _check_response(data, input_data)
+    # With no explicit parent, this is added below root
+    assert data['depth'] == 2
+    assert data['path'][:-4] == root.path
 
 
 def test_create_organization_with_parent(api_client):
@@ -142,8 +147,8 @@ def test_create_organization_with_parent(api_client):
     assert response.status_code == 201
     data = response.json()
     _check_response(data, input_data)
-    assert data['parent_organization']['id'] == parent_org.id
-    assert data['parent_organization']['name'] == parent_org.name
+    assert data['depth'] == 3
+    assert data['path'][:-4] == parent_org.path
 
 
 def test_organization_created_with_status_submitted(api_client):
@@ -151,11 +156,13 @@ def test_organization_created_with_status_submitted(api_client):
     This test checks the fields that are created when posting to
     AddOrganizationSerializer but are not returned in the JSON response.
     """
+    # we need to creat a root (even if we don't pass it in the request)
+    Organization2.add_root(name='Root')
     url = '/api/organizations/'
     input_data = _creation_data()
     response = api_client.post(url, input_data)
     assert response.status_code == 201
     data = response.json()
-    new_org = Organization.objects.get(pk=data['id'])
+    new_org = Organization2.objects.get(pk=data['id'])
     assert new_org.status == 'submitted'
     assert new_org.organization_email == input_data['organization_email']
