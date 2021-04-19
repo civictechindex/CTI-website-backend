@@ -59,7 +59,7 @@ DJANGO_APPS = [
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
-    "corsheaders"
+    "corsheaders",
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
@@ -70,11 +70,12 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "drf_yasg",
     "django_extensions",
+    "treebeard",
+    "debug_toolbar",
 ]
 
 LOCAL_APPS = [
     "civictechindexadmin.users.apps.UsersConfig",
-    # Your stuff: custom apps go here
     "civictechindexadmin.data.apps.DataConfig",
 ]
 
@@ -102,7 +103,8 @@ LOGIN_URL = "account_login"
 SITE_ID = 1
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

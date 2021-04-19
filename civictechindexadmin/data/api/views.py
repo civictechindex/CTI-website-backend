@@ -13,25 +13,25 @@ from .serializers import (
     AddOrganizationSerializer, AliasSerializer, OrganizationSerializer, OrganizationFullSerializer,
     FAQSerializer, LinkSerializer, NotificationSubscriptionSerializer,
 )
-from ..models import Organization, Link, FAQ, Alias
+from ..models import Organization2, Link2, FAQ, Alias
 
 
 class OrganizationViewSet(ViewSet):
     @swagger_auto_schema(responses={200: OrganizationSerializer(many=True)})
     def list(self, request):
-        queryset = Organization.objects.filter(status='approved').all()
+        queryset = Organization2.objects.filter(status='approved', depth__gt=1).all()
         serializer = OrganizationFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: OrganizationFullSerializer()})
     def retrieve(self, request, pk=None):
-        org = Organization.objects.filter(name=pk, status='approved').prefetch_related('links').first()
+        org = Organization2.objects.filter(name=pk, status='approved').prefetch_related('links').first()
         if not org:
             raise NotFound(f"No organization by the name of '{pk}'")
         serializer = OrganizationFullSerializer(org)
         return Response(serializer.data)
 
-    @swagger_auto_schema(responses={201: OrganizationFullSerializer()})
+    @swagger_auto_schema(responses={201: AddOrganizationSerializer()})
     def create(self, request):
         serializer = AddOrganizationSerializer(data=request.data)
         if serializer.is_valid():
@@ -45,17 +45,17 @@ class OrganizationViewSet(ViewSet):
 @api_view(['GET'])
 def org_by_github_id(request, github_id):
     try:
-        org = Organization.objects.get(github_id=github_id)
-    except Organization.DoesNotExist:
+        org = Organization2.objects.get(github_id=github_id)
+    except Organization2.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     serializer = OrganizationFullSerializer(org)
     return Response(serializer.data)
 
 
-class LinkViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
+class LinkViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     serializer_class = LinkSerializer
-    queryset = Link.objects.all()
+    queryset = Link2.objects.all()
 
 
 class MediumResultsSetPagination(PageNumberPagination):

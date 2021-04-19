@@ -74,6 +74,6 @@ tools this project uses. (Don't spend too long on these; just use them to get a 
 
 ### To run the automated tests in this project
 
-1. Log into the docker container: `docker exec -ti cti-website-backend_web_1 /bin/bash`
+1. Log into the docker container: `docker exec -ti cti-web /bin/bash`
 2. Run tests: `pytest`
 3. To run tests and see the coverage report run: `pytest --cov=civictechindexadmin`

@@ -1,5 +1,62 @@
 from django.conf import settings
 from django.db import models
+from treebeard.mp_tree import MP_Node
+
+
+class Organization2(MP_Node):
+    ORG_STATE_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied'),
+    ]
+
+    name = models.CharField(max_length=256)
+    import_id = models.IntegerField(blank=True, null=True)
+    city = models.CharField(max_length=256, blank=True)
+    state = models.CharField(max_length=256, blank=True)
+    country = models.CharField(max_length=256, blank=True)
+    image_url = models.URLField(max_length=2048, blank=True)
+    github_name = models.CharField(max_length=1024, blank=True)
+    github_id = models.IntegerField(blank=True, null=True)
+    cti_contributor = models.BooleanField(blank=True, null=True, default=None)
+    org_tag = models.CharField(max_length=128, blank=True)
+    # Organization email is the email collected when someone submits an org
+    # through the tag generator. It is not a general contact email for the org
+    organization_email = models.EmailField(max_length=256, blank=True)
+    status = models.CharField(max_length=32,
+                              choices=ORG_STATE_CHOICES,
+                              default='submitted')
+
+    node_order_by = ['name']
+
+    def __str__(self):
+        return f"Org: {self.name}"
+
+
+class Link2(models.Model):
+    LINK_TYPE_CHOICES = [
+        ('WebSite', 'WebSite'),
+        ('MeetUp', 'MeetUp'),
+        ('FaceBook', 'FaceBook'),
+        ('Twitter', 'Twitter'),
+        ('GitHub', 'GitHub'),
+    ]
+
+    organization = models.ForeignKey(Organization2,
+                                     related_name='links',
+                                     on_delete=models.CASCADE)
+    link_type = models.CharField(max_length=200,
+                                 choices=LINK_TYPE_CHOICES)
+    url = models.CharField(max_length=1024)
+    http_status = models.CharField(max_length=8, null=True, blank=True)
+    http_status_date = models.DateField(null=True, blank=True)
+    notes = models.TextField(max_length=4096, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.link_type}: {self.url}"
+
+    class Meta:
+        unique_together = [['organization', 'link_type']]
 
 
 class Organization(models.Model):

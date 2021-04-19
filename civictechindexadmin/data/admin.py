@@ -1,28 +1,32 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Alias, FAQ, Link, NotificationSubscription, Organization
+from treebeard.admin import TreeAdmin
+from treebeard.forms import movenodeform_factory
+from .models import Alias, FAQ, Link2, NotificationSubscription, Organization2
 from .status_code_filter import StatusCodeFilter
 
 
-class LinkInline(admin.TabularInline):
-    model = Link
+class LinkInline(admin.StackedInline):
+    model = Link2
     extra = 0
     fields = ('link_type', 'url', )
 
 
-class OrganizationAdmin(admin.ModelAdmin):
-    model = Organization
-    list_display = ('name', 'cti_contributor', 'parent_organization', 'org_tag', 'status', )
-    list_display_links = ('name', )
+class OrganizationAdmin(TreeAdmin):
+    model = Organization2
+    list_display = ('id', 'name', 'cti_contributor', 'org_tag', 'status', )
+    list_display_links = ('id', 'name')
     list_filter = ('status', 'cti_contributor')
-    search_fields = ('name', )
+    search_fields = ('name', 'city', 'state', 'country')
+    form = movenodeform_factory(Organization2)
     inlines = [LinkInline]
 
 
 class LinkAdmin(admin.ModelAdmin):
-    model = Link
-    list_display = ('id', 'link_type', 'display_url', 'http_status')
+    model = Link2
+    list_display = ('id', 'link_type', 'organization', 'display_url', 'http_status')
     list_display_links = ('id', )
+    search_fields = ('organization__name', 'url')
     list_filter = ('link_type', StatusCodeFilter)
     search_fields = ('url',)
 
@@ -50,8 +54,8 @@ class NotificationSubscriptionAdmin(admin.ModelAdmin):
     search_fields = ('email_address', )
 
 
-admin.site.register(Organization, OrganizationAdmin)
-admin.site.register(Link, LinkAdmin)
+admin.site.register(Organization2, OrganizationAdmin)
+admin.site.register(Link2, LinkAdmin)
 admin.site.register(FAQ, FAQAdmin)
 admin.site.register(Alias, AliasAdmin)
 admin.site.register(NotificationSubscription, NotificationSubscriptionAdmin)
