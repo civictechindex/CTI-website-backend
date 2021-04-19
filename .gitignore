@@ -45,6 +45,7 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+.pytest_cache/
 
 # Translations
 *.mo
@@ -52,6 +53,7 @@ coverage.xml
 
 # Django stuff:
 staticfiles/
+civictechindexadmin/media/
 
 # Sphinx documentation
 docs/_build/
@@ -61,8 +63,6 @@ target/
 
 # pyenv
 .python-version
-
-
 
 # Environments
 .venv
@@ -77,7 +77,6 @@ ENV/
 
 # mypy
 .mypy_cache/
-
 
 ### Node template
 # Logs
@@ -133,8 +132,7 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-
-### Linux template
+### emacs tmp files
 *~
 
 # temporary files which can be created if a process still has a handle open of a deleted file
@@ -257,15 +255,9 @@ Session.vim
 # Auto-generated tag files
 tags
 
-
 ### Project template
-
-civictechindexadmin/media/
-
-.pytest_cache/
-
-
 .ipython/
 .env
 .envs/*
 !.envs/.local/
+tmp

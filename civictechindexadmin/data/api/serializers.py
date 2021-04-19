@@ -2,20 +2,20 @@ from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from ..models import Organization2, Link2, FAQ, NotificationSubscription, Alias
+from ..models import Organization, Link, FAQ, NotificationSubscription, Alias
 
 
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Link2
+        model = Link
         fields = ['id', 'link_type', 'url']
         depth = 1
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Organization2
-        fields = ['id', 'depth', 'path', 'name', 'github_name', 'github_id',
+        model = Organization
+        fields = ['id', 'depth', 'path', 'name', 'slug', 'github_name', 'github_id',
                   'cti_contributor', 'city', 'state', 'country', 'image_url', 'org_tag']
 
 
@@ -25,8 +25,8 @@ class OrganizationFullSerializer(serializers.ModelSerializer):
     aliases = serializers.SerializerMethodField()
 
     class Meta:
-        model = Organization2
-        fields = ['id', 'depth', 'path', 'name', 'github_name', 'github_id',
+        model = Organization
+        fields = ['id', 'depth', 'path', 'name', 'slug', 'github_name', 'github_id',
                   'cti_contributor', 'city', 'state', 'country', 'image_url', 'org_tag',
                   'links', 'aliases', ]  # 'parent_organizations']
 
@@ -40,7 +40,7 @@ class OrganizationFullSerializer(serializers.ModelSerializer):
 class AddOrganizationSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=256)  # required
     parent_organization = serializers.PrimaryKeyRelatedField(
-        queryset=Organization2.objects.all(), required=False)
+        queryset=Organization.objects.all(), required=False)
 
     website_url = serializers.URLField(max_length=1024, required=False)
     github_url = serializers.URLField(max_length=1024)  # required
@@ -64,7 +64,7 @@ class AddOrganizationSerializer(serializers.Serializer):
             ('MeetUp', validated_data.get('meetup_url')),
         ]
 
-        org = Organization2(
+        org = Organization(
             name=validated_data["name"],
             city=validated_data.get('city', None),
             state=validated_data.get('state', None),
@@ -75,11 +75,11 @@ class AddOrganizationSerializer(serializers.Serializer):
         if validated_data.get('parent_organization'):
             validated_data['parent_organization'].add_child(instance=org)
         else:
-            Organization2.get_first_root_node().add_child(instance=org)
+            Organization.get_first_root_node().add_child(instance=org)
 
         for link_type, link in links:
             if link:
-                Link2.objects.create(
+                Link.objects.create(
                     organization=org,
                     link_type=link_type,
                     url=link,

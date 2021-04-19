@@ -1,7 +1,8 @@
 from django.conf import settings
+from django.utils.text import slugify
 from factory import DjangoModelFactory, Iterator, Sequence, SubFactory
 
-from ..models import Alias, FAQ, Link2, Organization2
+from ..models import Alias, FAQ, Link, Organization
 
 
 class UserFactory(DjangoModelFactory):
@@ -24,7 +25,7 @@ class FAQFactory(DjangoModelFactory):
 
 class OrganizationFactory(DjangoModelFactory):
     class Meta:
-        model = Organization2
+        model = Organization
         django_get_or_create = ["name"]
 
     name = Sequence(lambda n: "Open Thing %d" % n)
@@ -41,13 +42,14 @@ class OrganizationFactory(DjangoModelFactory):
         else:
             parent = model_class.add_root(name='Root')
         obj = model_class(**kwargs)
+        obj.slug = slugify(obj.name)
         return parent.add_child(instance=obj)
 
 
 # NOTE to use this you must instantiate with the related Organization
 class LinkFactory(DjangoModelFactory):
     class Meta:
-        model = Link2
+        model = Link
         django_get_or_create = ["url"]
 
     link_type = Iterator(['WebSite', 'MeetUp', 'FaceBook', 'Twitter', 'GitHub'])
