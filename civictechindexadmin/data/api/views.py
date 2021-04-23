@@ -19,7 +19,7 @@ from ..models import Organization, Link, FAQ, Alias
 class OrganizationViewSet(GenericViewSet):
     # The base queryset is approved orgs that are not the Root of the tree.
     # The root of the MP_Node tree isn't a real org, it only exists to start our tree
-    queryset = Organization.objects.filter(status='approved', depth__gt=1)
+    queryset = Organization.objects.filter(status='approved', depth__gt=1).prefetch_related('links')
     serializer_class = OrganizationSerializer
     filter_backends = [SearchFilter]
     search_fields = ['@name', '@city', '@state', '@country']

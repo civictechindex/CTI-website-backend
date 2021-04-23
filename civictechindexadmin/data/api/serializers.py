@@ -20,7 +20,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 class OrganizationFullSerializer(serializers.ModelSerializer):
-    # parent_organization = ParentOrganizationSerializer(many=False, read_only=True)
+    # parent_organizations = serializers.SerializerMethodField()
     links = LinkSerializer(many=True, read_only=True)
     aliases = serializers.SerializerMethodField()
 
@@ -34,7 +34,7 @@ class OrganizationFullSerializer(serializers.ModelSerializer):
         return [a.alias for a in Alias.objects.filter(tag=org.org_tag).all()]
 
     # def get_parent_organizations(self, org):
-    #     return [a.name for a in org.get_ancestors().filter(depth__gt=1)]
+    #     return [(a.name, a.slug) for a in org.get_ancestors().filter(depth__gt=1)]
 
 
 class AddOrganizationSerializer(serializers.Serializer):
