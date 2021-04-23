@@ -21,6 +21,21 @@ def test_get_organizations(api_client):
     assert data[0]['name'] == approved_org.name
 
 
+def test_search_organizations(api_client):
+    hack = OrganizationFactory(name='Hack for Austin')
+    open_org = OrganizationFactory(name='Open Austin', city='Austin', state='Texas')
+    open_other = OrganizationFactory(name='Open Houston', city='Houston', state='Texas')
+    response = api_client.get('/api/organizations/?search=Austin')
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 2
+    assert hack.name in [o['name'] for o in data]
+    assert open_org.name in [o['name'] for o in data]
+    # Now search for Texas
+    response = api_client.get('/api/organizations/?search=Texas')
+    assert [open_org.name, open_other.name] == [o['name'] for o in response.json()]
+
+
 def _get_org_detail_page(api_client, org):
     """Helper method to dry up repeated calls to org detail page"""
     url = f'/api/organizations/{org.slug}/'

@@ -7,7 +7,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet, ViewSet
+from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from .serializers import (
     AddOrganizationSerializer, AliasSerializer, OrganizationSerializer, OrganizationFullSerializer,
@@ -16,15 +16,25 @@ from .serializers import (
 from ..models import Organization, Link, FAQ, Alias
 
 
-class OrganizationViewSet(ViewSet):
+class OrganizationViewSet(GenericViewSet):
+    # The base queryset is approved orgs that are not the Root of the tree.
+    # The root of the MP_Node tree isn't a real org, it only exists to start our tree
+    queryset = Organization.objects.filter(status='approved', depth__gt=1)
+    serializer_class = OrganizationSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['@name', '@city', '@state', '@country']
+
     @swagger_auto_schema(responses={200: OrganizationSerializer(many=True)})
-    def list(self, request):
+    def list(self, request, *args, **kwargs):
         """
         Returns all organizations that are approved for showing on this web site.
+        If the request has a '?search=Something', we will perform a full text search
+        for orgs with 'Something' in their name, city, state, or country
+
         Items are returned as a tree - ordered alphabetically within their level.
         """
-        queryset = Organization.objects.filter(status='approved', depth__gt=1).all()
-        serializer = OrganizationFullSerializer(queryset, many=True)
+        results = self.filter_queryset(self.get_queryset())
+        serializer = OrganizationFullSerializer(results, many=True)
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: OrganizationFullSerializer()})
