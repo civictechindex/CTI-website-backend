@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.decorators import action, api_view
 from rest_framework.exceptions import NotFound
 from rest_framework.filters import SearchFilter
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
@@ -118,7 +118,7 @@ class FAQViewSet(ReadOnlyModelViewSet):
             return Response(f"FAQ {pk} not found", status=status.HTTP_404_NOT_FOUND)
 
 
-class AliasViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet, CreateModelMixin):
+class AliasViewSet(ReadOnlyModelViewSet):
     serializer_class = AliasSerializer
     queryset = Alias.objects.all()
     lookup_field = "alias"
