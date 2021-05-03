@@ -13,7 +13,7 @@ from ...models import Link, Organization
 git_api = Github(os.getenv('GH_TOKEN'))
 
 
-def civictechindex_organizations_on_github(query='topic:civictechindex') -> list:
+def civictechindex_organizations_on_github(query='topic:civictechindex') -> dict:
     """Return a dictionary of organizations having repositories tagged with the topic `civictechindex`"""
     org_container = {}
     for repository in git_api.search_repositories(query):
