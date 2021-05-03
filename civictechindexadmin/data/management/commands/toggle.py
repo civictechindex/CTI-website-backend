@@ -10,27 +10,36 @@ from django.core.management.base import BaseCommand
 from django.core.exceptions import ObjectDoesNotExist
 from ...models import Organization
 
-
-# Logger Configurations
-logging.basicConfig(filename='manage_toggle.log',
-                    level=logging.INFO,
-                    format='%(levelname)s: %(asctime)s %(message)s')
-
 # While it is possible to initialize Github() without passing in any access token, it is not reccomended,
 # due to the fact that you will hit rate limit very fast.
 git_api = Github(os.getenv('GH_TOKEN'))
 
 
 
-def civictechindex_organizations_on_github() -> list:
+def civictechindex_organizations_on_github(query = 'topic:civictechindex') -> list:
     """Return a unique sorted list of organization names wich has the topic:civictechindex"""
-    query = 'topic:civictechindex'
     org_container = set([repository.organization.name for repository in git_api.search_repositories(query) if repository.organization!=None])
+    if len(org_container) == 0:
+        raise Exception(f"No organization found with the search query -> {query}")
     return sorted(org_container)
 
-def create_issue_for_add_organization_to_db(organizations):
-    logging.info(f'Created new issue for organization [{str(organizations)}]')
+def traverse_and_update(civictechindex_org_container):
+    """Loops through all the objects within the organization table and update cti_contributor col"""
+    for org_in_db in Organization.objects.all():
+        if org_in_db.name in civictechindex_org_container:
+            civictechindex_org_container.remove(org_in_db.name)
+            if org_in_db.cti_contributor == False:
+                org_in_db.cti_contributor = True
+                org_in_db.save()
+        else:
+            if org_in_db.cti_contributor == True:
+                org_in_db.cti_contributor = True
+                org_in_db.save()
 
+def add_new_organization_to_db(organizations):
+    """Given a list of organizations name, add those organizations to the database while setting their cti_contributor col to True"""
+    for org in organizations:
+        Organization.get_first_root_node().add_child(instance=Organization(name=org,cti_contributor=True))
 class Command(BaseCommand):
     help = ("""
     The toggle command queries the github api for all reposistories
@@ -49,26 +58,29 @@ class Command(BaseCommand):
 
     def handle(self, **options):
 
-        logging.info('==========Script Start==========')     
+        self.stdout.write('==========Script Start==========')
 
-        civictechindex_org_container = civictechindex_organizations_on_github()
-        logging.info(f'civictechindex ogranizations from api call -> [{str(civictechindex_org_container)}]')
-        all_orgs_in_db = Organization.objects.all()
-        
-        for org_in_db in all_orgs_in_db:
-            if (org_in_db.name in civictechindex_org_container) and (org_in_db.cti_contributor == False):
-                logging.info(f'org [{org_in_db.name}] in database exist in org name from api and db value is false, so it is being set to true')
-                civictechindex_org_container.remove(org_in_db.name)  
-                org_in_db.cti_contributor = True
-                org_in_db.save()
-            elif (org_in_db.name in civictechindex_org_container) and (org_in_db.cti_contributor == True):
-                logging.info(f'org [{org_in_db.name}] in database exist in org name from api and db value is true, remove org from civictechindex_org_container')
-                civictechindex_org_container.remove(org_in_db.name)
-            elif (org_in_db.name not in civictechindex_org_container) and (org_in_db.cti_contributor == True):
-                logging.info(f'org [{org_in_db.name}] in database does not exist in org name from api and db value is true, so it is being set to false')  
-                org_in_db.cti_contributor = False
-                org_in_db.save()
+        try:
+            query = 'topic:civictechindex'
 
-        create_issue_for_add_organization_to_db(civictechindex_org_container)
+            self.stdout.write(f'Creating a set of organization that has the topic tag -> {query}')
+            civictechindex_org_container = civictechindex_organizations_on_github(query)
+            self.stdout.write(f'Successfully retrieved the following org -> {str(civictechindex_org_container)}')
 
-        logging.info('==========Script End==========')
+            
+            self.stdout.write(f'Find civic tech organizations and Update their cti_contributor colum value')
+            traverse_and_update(civictechindex_org_container)
+            self.stdout.write(self.style.SUCCESS(f'Find and Update Complete'))
+
+            if len(civictechindex_org_container) > 0:
+                self.stdout.write(f'Add new organizations to database that has the topic tag `civictechindex`-> {civictechindex_org_container}')
+                add_new_organization_to_db(civictechindex_org_container)
+                self.stdout.write(f'Add new organizations complete')
+            
+            self.stdout.write("==========Script End============")
+
+        except Exception as error:
+            self.stderr.write(error)
+            
+
+
