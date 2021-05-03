@@ -36,6 +36,8 @@ class Organization(MP_Node):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+        if not slug:
+            raise RuntimeError("Django's slugify method was not able to create a slug for this organization.")
         super().save(*args, **kwargs)
 
 
