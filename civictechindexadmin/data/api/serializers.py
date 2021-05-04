@@ -66,9 +66,9 @@ class AddOrganizationSerializer(serializers.Serializer):
 
         org = Organization(
             name=validated_data["name"],
-            city=validated_data.get('city', None),
-            state=validated_data.get('state', None),
-            country=validated_data.get('country', None),
+            city=validated_data.get('city', ''),
+            state=validated_data.get('state', ''),
+            country=validated_data.get('country', ''),
             org_tag=validated_data['org_tag'],
             organization_email=validated_data['organization_email'],
         )

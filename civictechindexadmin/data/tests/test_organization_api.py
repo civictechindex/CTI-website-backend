@@ -138,7 +138,28 @@ def _check_response(response, input_data):
     assert input_data['github_url'] in [link['url'] for link in response['links']]
 
 
-def test_create_organization(api_client):
+def test_create_organization_with_sparse_input(api_client):
+    # we need to creat a root (even if we don't pass it in the request)
+    root = Organization.add_root(name='Root')
+    url = '/api/organizations/'
+    input_data = {
+        'name': 'Code for Berwick',
+        'organization_email': 'cfp@example.org',
+        'github_url': 'https://hackforla.org',
+        'org_tag': 'hack4berwick',
+    }
+
+    response = api_client.post(url, input_data)
+    assert response.status_code == 201
+    data = response.json()
+    assert data['name'] == 'Code for Berwick'
+    assert data['slug'] == 'code-for-berwick'
+    assert data['depth'] == 2
+    assert data['path'][:-4] == root.path
+    assert data['city'] == ''
+
+
+def test_create_organization_with_all_values(api_client):
     # we need to creat a root (even if we don't pass it in the request)
     root = Organization.add_root(name='Root')
     url = '/api/organizations/'
