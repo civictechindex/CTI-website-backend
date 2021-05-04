@@ -35,9 +35,11 @@ class Organization(MP_Node):
         return f"Org: {self.name}"
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
         if not self.slug:
-            raise RuntimeError("Django's slugify method was not able to create a slug for this organization.")
+            self.slug = slugify(self.name)
+            # If there are no latin characters in name, this will still be blank
+            if not self.slug:
+                raise RuntimeError("Django's slugify method was not able to create a slug for this organization.")
         super().save(*args, **kwargs)
 
 
