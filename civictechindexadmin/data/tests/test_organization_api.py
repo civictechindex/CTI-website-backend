@@ -123,7 +123,7 @@ def _creation_data():
         'state': 'CA',
         'country': 'USA',
         'organization_email': 'cfp@example.org',
-        'github_url': 'https://hackforla.org',
+        'github_url': 'https://www.github.com/hackforla',
         'org_tag': 'hack4pasadena',
     }
 
@@ -145,7 +145,7 @@ def test_create_organization_with_sparse_input(api_client):
     input_data = {
         'name': 'Code for Berwick',
         'organization_email': 'cfp@example.org',
-        'github_url': 'https://hackforla.org',
+        'github_url': 'https://www.github.com/hackforla',
         'org_tag': 'hack4berwick',
     }
 
@@ -203,3 +203,93 @@ def test_organization_created_with_status_submitted(api_client):
     new_org = Organization.objects.get(pk=data['id'])
     assert new_org.status == 'submitted'
     assert new_org.organization_email == input_data['organization_email']
+
+
+def test_create_organization_with_invalid_github_url(api_client):
+    """
+    This check tests that request with an incorrectly formatted
+    github url returns a status code of 400
+    """
+    # we need to create a root (even if we don't pass it in the request)
+    Organization.add_root(name='Root')
+    url = '/api/organizations/'
+    input_data = {
+        'name': 'Code for Berwick',
+        'organization_email': 'cfp@example.org',
+        'github_url': 'https://hackforla.org',
+        'org_tag': 'hack4berwick',
+    }
+
+    response = api_client.post(url, input_data)
+    data = response.json()
+    assert response.status_code == 400
+    assert data['github_url'] == ['Not a valid GitHub URL']
+
+
+def test_create_organization_with_invalid_meetup_url(api_client):
+    """
+    This check tests that request with an incorrectly formatted
+    meetup url returns a status code of 400
+    """
+    # we need to create a root (even if we don't pass it in the request)
+    Organization.add_root(name='Root')
+    url = '/api/organizations/'
+    input_data = {
+        'name': 'Code for Berwick',
+        'organization_email': 'cfp@example.org',
+        'github_url': 'https://www.github.com/hackforla',
+        'org_tag': 'hack4berwick',
+        'meetup_url': 'https://www.cat.org'
+
+    }
+
+    response = api_client.post(url, input_data)
+    data = response.json()
+    assert response.status_code == 400
+    assert data['meetup_url'] == ['Not a valid meetup URL']
+
+
+def test_create_organization_with_invalid_facebook_url(api_client):
+    """
+    This check tests that request with an incorrectly formatted
+    facebook url returns a status code of 400
+    """
+    # we need to create a root (even if we don't pass it in the request)
+    Organization.add_root(name='Root')
+    url = '/api/organizations/'
+    input_data = {
+        'name': 'Code for Berwick',
+        'organization_email': 'cfp@example.org',
+        'github_url': 'https://www.github.com/hackforla',
+        'org_tag': 'hack4berwick',
+        'facebook_url': 'https://www.cat.org'
+
+    }
+
+    response = api_client.post(url, input_data)
+    data = response.json()
+    assert response.status_code == 400
+    assert data['facebook_url'] == ['Not a valid Facebook URL']
+
+
+def test_create_organization_with_invalid_twitter_url(api_client):
+    """
+    This check tests that request with an incorrectly formatted
+    twitter url returns a status code of 400
+    """
+    # we need to create a root (even if we don't pass it in the request)
+    Organization.add_root(name='Root')
+    url = '/api/organizations/'
+    input_data = {
+        'name': 'Code for Berwick',
+        'organization_email': 'cfp@example.org',
+        'github_url': 'https://www.github.com/hackforla',
+        'org_tag': 'hack4berwick',
+        'twitter_url': 'https://www.cat.org'
+
+    }
+
+    response = api_client.post(url, input_data)
+    data = response.json()
+    assert response.status_code == 400
+    assert data['twitter_url'] == ['Not a valid Twitter URL']
