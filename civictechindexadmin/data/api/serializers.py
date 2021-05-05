@@ -7,8 +7,6 @@ from rest_framework.exceptions import ValidationError
 from ..models import Organization, Link, FAQ, NotificationSubscription, Alias
 
 
-
-
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
