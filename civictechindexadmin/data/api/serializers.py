@@ -1,10 +1,13 @@
+import re
+
 from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from ..models import Organization, Link, FAQ, NotificationSubscription, Alias
 
-import re
+
+
 
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,28 +57,26 @@ class AddOrganizationSerializer(serializers.Serializer):
     country = serializers.CharField(max_length=512, required=False)
     org_tag = serializers.CharField(max_length=128)
     organization_email = serializers.EmailField(max_length=128)
-    
 
     def validate_github_url(self, value):
         """
         Check that the url provided is a valid github url
         """
-        regex_pattern = "(https://github.com/)([/A-Za-z0-9_-]+)"
-        regex_result = re.search(regex_pattern,value)
+        regex_pattern = "(https://www.github.com/)([/A-Za-z0-9_-]+)"
+        regex_result = re.search(regex_pattern, value)
 
         # if regex_result returns none it failed to match the entire string, raise error
         # or
         # if the lenght of the url is greater than the upper bound of the matched string, raise error
-        if not regex_result or len(value)>regex_result.span()[1]:
+        if not regex_result or len(value) > regex_result.span()[1]:
             raise serializers.ValidationError("Not a valid GitHub URL")
         return value
-
 
     def validate_facebook_url(self, value):
         """
         Check that the value is a valid facebook  url
         """
-        if 'https://www.facebook.com/' not in value.lower():
+        if not value.lower().startswith('https://www.facebook.com/'):
             raise serializers.ValidationError("Not a valid Facebook URL")
         return value
 
@@ -83,15 +84,15 @@ class AddOrganizationSerializer(serializers.Serializer):
         """
         Check that the value is valid twitter url
         """
-        if 'https://www.twitter.com/' not in value.lower():
+        if 'twitter.com/' not in value.lower():
             raise serializers.ValidationError("Not a valid Twitter URL")
         return value
 
-    def validate_meetup_url (self, value):
+    def validate_meetup_url(self, value):
         """
         Check that the value is a valid meetup url
         """
-        if 'https://www.meetup.com/' not in value.lower():
+        if not value.lower().startswith('https://www.meetup.com/'):
             raise serializers.ValidationError("Not a valid meetup URL")
         return value
 
