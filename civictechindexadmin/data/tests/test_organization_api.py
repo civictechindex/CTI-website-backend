@@ -234,14 +234,8 @@ def test_create_organization_with_invalid_meetup_url(api_client):
     # we need to create a root (even if we don't pass it in the request)
     Organization.add_root(name='Root')
     url = '/api/organizations/'
-    input_data = {
-        'name': 'Code for Berwick',
-        'organization_email': 'cfp@example.org',
-        'github_url': 'https://www.github.com/hackforla',
-        'org_tag': 'hack4berwick',
-        'meetup_url': 'https://www.cat.org'
-
-    }
+    input_data = _creation_data()
+    input_data['meetup_url'] = 'https://www.cat.org'
 
     response = api_client.post(url, input_data)
     data = response.json()
@@ -257,14 +251,8 @@ def test_create_organization_with_invalid_facebook_url(api_client):
     # we need to create a root (even if we don't pass it in the request)
     Organization.add_root(name='Root')
     url = '/api/organizations/'
-    input_data = {
-        'name': 'Code for Berwick',
-        'organization_email': 'cfp@example.org',
-        'github_url': 'https://www.github.com/hackforla',
-        'org_tag': 'hack4berwick',
-        'facebook_url': 'https://www.cat.org'
-
-    }
+    input_data = _creation_data()
+    input_data['facebook_url'] = 'https://www.cat.org'
 
     response = api_client.post(url, input_data)
     data = response.json()
@@ -280,14 +268,8 @@ def test_create_organization_with_invalid_twitter_url(api_client):
     # we need to create a root (even if we don't pass it in the request)
     Organization.add_root(name='Root')
     url = '/api/organizations/'
-    input_data = {
-        'name': 'Code for Berwick',
-        'organization_email': 'cfp@example.org',
-        'github_url': 'https://www.github.com/hackforla',
-        'org_tag': 'hack4berwick',
-        'twitter_url': 'https://www.cat.org'
-
-    }
+    input_data = _creation_data()
+    input_data['twitter_url'] = 'https://www.cat.org'
 
     response = api_client.post(url, input_data)
     data = response.json()
