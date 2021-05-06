@@ -36,8 +36,8 @@ class Organization(MP_Node):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
-            # If there are no latin characters in name, this will still be blank
+            self.slug = slugify(self.name, allow_unicode=True)
+            # Sometimes slugify strips out everything, so check before committing
             if not self.slug:
                 raise RuntimeError("Django's slugify method was not able to create a slug for this organization.")
         super().save(*args, **kwargs)
