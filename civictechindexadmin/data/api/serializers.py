@@ -3,6 +3,7 @@ import re
 from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.validators import UniqueValidator
 
 from ..models import Organization, Link, FAQ, NotificationSubscription, Alias
 
@@ -40,7 +41,13 @@ class OrganizationFullSerializer(serializers.ModelSerializer):
 
 
 class AddOrganizationSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=256)  # required
+    name = serializers.CharField(
+        max_length=256,
+        validators=[UniqueValidator(
+            queryset=Organization.objects.all(),
+            message='We already have an organization with this name'
+        )],
+    )
     parent_organization = serializers.PrimaryKeyRelatedField(
         queryset=Organization.objects.all(), required=False)
 
