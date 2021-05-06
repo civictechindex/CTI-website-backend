@@ -134,12 +134,11 @@ def _check_response(response, input_data):
     assert response['state'] == input_data['state']
     assert response['country'] == input_data['country']
     assert response['org_tag'] == input_data['org_tag']
-    assert len(response['links']) == 1
     assert input_data['github_url'] in [link['url'] for link in response['links']]
 
 
 def test_create_organization_with_sparse_input(api_client):
-    # we need to creat a root (even if we don't pass it in the request)
+    # we need to create a root (even if we don't pass it in the request)
     root = Organization.add_root(name='Root')
     url = '/api/organizations/'
     input_data = {
@@ -160,10 +159,13 @@ def test_create_organization_with_sparse_input(api_client):
 
 
 def test_create_organization_with_all_values(api_client):
-    # we need to creat a root (even if we don't pass it in the request)
+    # we need to create a root (even if we don't pass it in the request)
     root = Organization.add_root(name='Root')
     url = '/api/organizations/'
     input_data = _creation_data()
+    input_data['facebook_url'] = 'https://www.facebook.com/hackforla'
+    input_data['meetup_url'] = 'https://www.meetup.com/hackforla'
+    input_data['twitter_url'] = 'https://twitter.com/hackforla'
     response = api_client.post(url, input_data)
     assert response.status_code == 201
     data = response.json()
@@ -171,6 +173,7 @@ def test_create_organization_with_all_values(api_client):
     # With no explicit parent, this is added below root
     assert data['depth'] == 2
     assert data['path'][:-4] == root.path
+    assert len(data['links']) == 4
 
 
 def test_create_organization_with_parent(api_client):
@@ -203,6 +206,22 @@ def test_organization_created_with_status_submitted(api_client):
     new_org = Organization.objects.get(pk=data['id'])
     assert new_org.status == 'submitted'
     assert new_org.organization_email == input_data['organization_email']
+
+
+def test_create_duplicate_org_errors_gracefully(api_client):
+    # we need to create a root (even if we don't pass it in the request)
+    root = Organization.add_root(name='Root')
+    url = '/api/organizations/'
+    input_data = _creation_data()
+
+    # First submit is fine
+    response = api_client.post(url, input_data)
+    assert response.status_code == 201
+
+    # Duplicate submit gives 'invalid input' error
+    response = api_client.post(url, input_data)
+    assert response.status_code == 400
+    assert response.json()['name'] == ['We already have an organization with this name']
 
 
 def test_create_organization_with_invalid_github_url(api_client):
