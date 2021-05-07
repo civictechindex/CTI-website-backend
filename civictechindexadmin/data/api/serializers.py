@@ -67,7 +67,7 @@ class AddOrganizationSerializer(serializers.Serializer):
         """
         Check that the url provided is a valid github url
         """
-        regex_pattern = "(https://www.github.com/)([/A-Za-z0-9_-]+)"
+        regex_pattern = "(https://)(www.)?(github.com/)([/A-Za-z0-9_-]+)"
         regex_result = re.search(regex_pattern, value)
 
         # if regex_result returns none it failed to match the entire string, raise error

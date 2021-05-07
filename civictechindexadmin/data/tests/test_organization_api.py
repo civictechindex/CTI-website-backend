@@ -123,7 +123,7 @@ def _creation_data():
         'state': 'CA',
         'country': 'USA',
         'organization_email': 'cfp@example.org',
-        'github_url': 'https://www.github.com/hackforla',
+        'github_url': 'https://github.com/hackforla',
         'org_tag': 'hack4pasadena',
     }
 
@@ -210,7 +210,7 @@ def test_organization_created_with_status_submitted(api_client):
 
 def test_create_duplicate_org_errors_gracefully(api_client):
     # we need to create a root (even if we don't pass it in the request)
-    root = Organization.add_root(name='Root')
+    Organization.add_root(name='Root')
     url = '/api/organizations/'
     input_data = _creation_data()
 
