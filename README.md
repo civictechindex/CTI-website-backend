@@ -30,11 +30,12 @@ that allows your web container to talk to your database container.
 
 1. Install Docker
 2. Clone this repository
-3. Build and configure your docker container by running the following command:
+3. Copy `config/.env.example` to `config/.env`
+4. Build and configure your docker container by running the following command:
     ```
     docker-compose up -d --build
     ```
-4. Our `docker-compose.yaml` creates a volume for persisting the database
+5. Our `docker-compose.yaml` creates a volume for persisting the database
    information so you should only have to run the migrations, load the data, and
    create a superuser the first time you create your containers.
     ```
@@ -50,10 +51,10 @@ that allows your web container to talk to your database container.
     ```
     pip install -r requirements.txt
     ```
-5. Edit the `config/.env` file to provide the database credentials your project
-   will use. The contents of your .env file should provide the following
-   information (though the values for user, host, db will depend on how you have
-   configured your local Postgres database):
+5. Copy `config/.env.example` to `config/.env` and edit to provide the database
+   credentials your project will use. The contents of your .env file should
+   provide the following information (though the values for user, host, db will
+   depend on how you have configured your local Postgres database):
     ```
     POSTGRES_NAME='postgres'
     POSTGRES_PASSWORD='postgres'
