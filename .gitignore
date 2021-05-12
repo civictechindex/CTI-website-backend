@@ -257,7 +257,7 @@ tags
 
 ### Project template
 .ipython/
-config/.env.*
+config/.env*
 !config/.env.example
 tmp
 
