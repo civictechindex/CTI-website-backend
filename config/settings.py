@@ -164,11 +164,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('POSTGRES_NAME', default='postgres'),
+        'NAME': env('POSTGRES_DATABASE', default='postgres'),
         'USER': env('POSTGRES_USER', default='postgres'),
         'PASSWORD': env('POSTGRES_PASSWORD', default=''),
         'HOST': env('POSTGRES_HOST', default='localhost'),
-        'PORT': 5432
+        'PORT': env('POSTGRES_PORT', default=5432),
     }
 }
 # Password validation
