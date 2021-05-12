@@ -257,7 +257,10 @@ tags
 
 ### Project template
 .ipython/
-.env
-.envs/*
-!.envs/.local/
+config/.env.*
+!config/.env.example
 tmp
+
+# Database dump files
+*.dmp
+*.dump
