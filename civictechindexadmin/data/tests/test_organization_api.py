@@ -19,6 +19,7 @@ def test_get_organizations(api_client):
     data = response.json()
     assert len(data) == 1
     assert data[0]['name'] == approved_org.name
+    assert not data[0]['affiliated']
 
 
 def test_search_organizations(api_client):
@@ -49,6 +50,7 @@ def test_get_organization_detail(api_client):
     data = _get_org_detail_page(api_client, org)
     assert data['name'] == org.name
     assert data['slug'] == slugify(org.name)
+    assert not data['affiliated']
 
 
 def test_get_org_detail_does_not_show_submitted(api_client):
@@ -174,10 +176,11 @@ def test_create_organization_with_all_values(api_client):
     assert data['depth'] == 2
     assert data['path'][:-4] == root.path
     assert len(data['links']) == 4
+    # Organizations without parents are not "affilited"
+    assert not data['affiliated']
 
 
 def test_create_organization_with_parent(api_client):
-    """Adding an org with a parent works in Postman but this test says the org id is invalid.               s """
     parent_org = OrganizationFactory.create(name='Code for All', github_id=12345)
     url = '/api/organizations/'
     input_data = _creation_data()
@@ -189,6 +192,8 @@ def test_create_organization_with_parent(api_client):
     _check_response(data, input_data)
     assert data['depth'] == 3
     assert data['path'][:-4] == parent_org.path
+    # Organizations with parents are "affilited"
+    assert data['affiliated']
 
 
 def test_organization_created_with_status_submitted(api_client):
