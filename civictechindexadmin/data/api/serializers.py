@@ -16,28 +16,34 @@ class LinkSerializer(serializers.ModelSerializer):
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Organization
-        fields = ['id', 'depth', 'path', 'name', 'slug', 'github_name', 'github_id',
-                  'cti_contributor', 'city', 'state', 'country', 'image_url', 'org_tag']
-
-
-class OrganizationFullSerializer(serializers.ModelSerializer):
-    # parent_organizations = serializers.SerializerMethodField()
-    links = LinkSerializer(many=True, read_only=True)
-    aliases = serializers.SerializerMethodField()
+    affiliated = serializers.SerializerMethodField()
 
     class Meta:
         model = Organization
         fields = ['id', 'depth', 'path', 'name', 'slug', 'github_name', 'github_id',
                   'cti_contributor', 'city', 'state', 'country', 'image_url', 'org_tag',
-                  'links', 'aliases', ]  # 'parent_organizations']
+                  'affiliated', ]
+
+    def get_affiliated(self, org):
+        return not (org.depth == 2 and org.numchild == 0)
+
+
+class OrganizationFullSerializer(serializers.ModelSerializer):
+    links = LinkSerializer(many=True, read_only=True)
+    aliases = serializers.SerializerMethodField()
+    affiliated = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Organization
+        fields = ['id', 'depth', 'path', 'name', 'slug', 'github_name', 'github_id',
+                  'cti_contributor', 'city', 'state', 'country', 'image_url', 'org_tag',
+                  'links', 'aliases', 'affiliated', ]
 
     def get_aliases(self, org):
         return [a.alias for a in Alias.objects.filter(tag=org.org_tag).all()]
 
-    # def get_parent_organizations(self, org):
-    #     return [(a.name, a.slug) for a in org.get_ancestors().filter(depth__gt=1)]
+    def get_affiliated(self, org):
+        return not (org.depth == 2 and org.numchild == 0)
 
 
 class AddOrganizationSerializer(serializers.Serializer):
