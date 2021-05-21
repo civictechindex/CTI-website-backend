@@ -61,11 +61,11 @@ def test_get_org_detail_does_not_show_submitted(api_client):
 
 
 def test_get_org_detail_does_not_show_denied(api_client):
-    org = OrganizationFactory(name='Evil', status='denied')
+    org = OrganizationFactory(name='Evil Empire', status='denied')
     url = f'/api/organizations/{org.slug}/'
     response = api_client.get(url)
     assert response.status_code == 404
-    assert response.json()['detail'] == "No organization by the name of 'evil'"
+    assert response.json()['detail'] == "No organization 'evil-empire'"
 
 
 def test_get_organization_by_github_id(api_client):

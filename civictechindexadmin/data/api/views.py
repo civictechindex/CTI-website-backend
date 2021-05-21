@@ -22,6 +22,7 @@ class OrganizationViewSet(GenericViewSet):
     queryset = Organization.objects.filter(status='approved', depth__gt=1).prefetch_related('links')
     serializer_class = OrganizationSerializer
     filter_backends = [SearchFilter]
+    lookup_field = 'slug'
     search_fields = ['@name', '@city', '@state', '@country']
 
     @swagger_auto_schema(responses={200: OrganizationSerializer(many=True)})
@@ -38,15 +39,14 @@ class OrganizationViewSet(GenericViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: OrganizationFullSerializer()})
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, slug=None):
         """
-        Returns all the information we know about a single organization.
-        The current version uses the organization's name as the lookup key
-        but we may want to change that to use a sluggified version of the name.
+        Returns all the information we know about a single organization -
+        using the slug as the lookup field
         """
-        org = Organization.objects.filter(slug=pk, status='approved').prefetch_related('links').first()
+        org = Organization.objects.filter(slug=slug, status='approved').prefetch_related('links').first()
         if not org:
-            raise NotFound(f"No organization by the name of '{pk}'")
+            raise NotFound(f"No organization '{slug}'")
         serializer = OrganizationFullSerializer(org)
         return Response(serializer.data)
 
