@@ -106,6 +106,27 @@ def test_get_organization_detail_includes_aliases(api_client):
     assert sorted(data['aliases']) == ['code4somewhere', 'codeforsomewhere']
 
 
+def test_get_organization_detail_includes_parents(api_client):
+    parent_org = OrganizationFactory(org_tag='code-for-everywhere')
+    org = OrganizationFactory(org_tag='code-for-somewhere', parent=parent_org)
+    data = _get_org_detail_page(api_client, org)
+    assert data['name'] == org.name
+    assert data['org_tag'] == org.org_tag
+    assert len(data['parents']) == 1
+    assert data['parents'][0]['slug'] == parent_org.slug
+
+
+def test_get_organization_detail_includes_children(api_client):
+    org = OrganizationFactory(org_tag='code-for-everywhere')
+    child = OrganizationFactory(org_tag='code-for-somewhere', parent=org)
+    data = _get_org_detail_page(api_client, org)
+    assert data['name'] == org.name
+    assert data['org_tag'] == org.org_tag
+    assert data['parents'] == []
+    assert len(data['children']) == 1
+    assert data['children'][0]['slug'] == child.slug
+
+
 def test_create_organization_required_fields(api_client):
     url = '/api/organizations/'
     response = api_client.post(url, {})
