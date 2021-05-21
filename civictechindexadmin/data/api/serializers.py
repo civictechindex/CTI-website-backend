@@ -3,6 +3,7 @@ import re
 from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.reverse import reverse_lazy
 from rest_framework.validators import UniqueValidator
 
 from ..models import Organization, Link, FAQ, NotificationSubscription, Alias
@@ -15,18 +16,23 @@ class LinkSerializer(serializers.ModelSerializer):
         depth = 1
 
 
-class OrganizationSerializer(serializers.ModelSerializer):
+class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
     affiliated = serializers.SerializerMethodField()
     links = LinkSerializer(many=True, read_only=True)
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Organization
-        fields = ['id', 'depth', 'path', 'name', 'slug', 'github_name', 'github_id',
+        fields = ['id', 'depth', 'path', 'name', 'slug', 'url', 'github_name', 'github_id',
                   'cti_contributor', 'city', 'state', 'country', 'image_url', 'org_tag',
                   'affiliated', 'links', ]
 
     def get_affiliated(self, org):
         return not (org.depth == 2 and org.numchild == 0)
+
+    def get_url(self, org):
+        request = self.context['request']
+        return reverse_lazy('api:organization-detail', args=[org.slug], request=request)
 
 
 class OrganizationFullSerializer(serializers.ModelSerializer):
