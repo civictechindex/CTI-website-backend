@@ -17,12 +17,13 @@ class LinkSerializer(serializers.ModelSerializer):
 
 class OrganizationSerializer(serializers.ModelSerializer):
     affiliated = serializers.SerializerMethodField()
+    links = LinkSerializer(many=True, read_only=True)
 
     class Meta:
         model = Organization
         fields = ['id', 'depth', 'path', 'name', 'slug', 'github_name', 'github_id',
                   'cti_contributor', 'city', 'state', 'country', 'image_url', 'org_tag',
-                  'affiliated', ]
+                  'affiliated', 'links', ]
 
     def get_affiliated(self, org):
         return not (org.depth == 2 and org.numchild == 0)

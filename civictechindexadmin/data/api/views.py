@@ -35,7 +35,7 @@ class OrganizationViewSet(GenericViewSet):
         Items are returned as a tree - ordered alphabetically within their level.
         """
         results = self.filter_queryset(self.get_queryset())
-        serializer = OrganizationFullSerializer(results, many=True)
+        serializer = OrganizationSerializer(results, many=True)
         return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: OrganizationFullSerializer()})
