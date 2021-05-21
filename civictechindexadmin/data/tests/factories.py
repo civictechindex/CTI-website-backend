@@ -35,8 +35,8 @@ class OrganizationFactory(DjangoModelFactory):
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         """Override the default ``_create``to incorporate add_child."""
-        if 'parent' in kwargs.values():
-            parent = kwargs['parent']
+        if 'parent' in kwargs.keys():
+            parent = kwargs.pop('parent')
         elif model_class.get_first_root_node():
             parent = model_class.get_first_root_node()
         else:
