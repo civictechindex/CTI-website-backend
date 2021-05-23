@@ -56,11 +56,11 @@ class OrganizationFullSerializer(serializers.ModelSerializer):
 
     def get_parents(self, org):
         parents = org.get_ancestors()
-        return [{'slug': n.slug, 'name': n.name, 'image_url': n.image_url} for n in parents if n.depth > 1]
+        return [{'slug': n.slug, 'name': n.name, 'org_tag': n.org_tag} for n in parents if n.depth > 1]
 
     def get_children(self, org):
         children = org.get_descendants()
-        return [{'slug': n.slug, 'name': n.name, 'image_url': n.image_url} for n in children if n.depth > 1]
+        return [{'slug': n.slug, 'name': n.name, 'org_tag': n.org_tag} for n in children if n.depth > 1]
 
 
 class AddOrganizationSerializer(serializers.Serializer):
