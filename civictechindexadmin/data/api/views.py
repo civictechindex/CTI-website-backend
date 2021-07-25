@@ -11,9 +11,9 @@ from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from .serializers import (
     AddOrganizationSerializer, AliasSerializer, OrganizationSerializer, OrganizationFullSerializer,
-    FAQSerializer, LinkSerializer, NotificationSubscriptionSerializer,
+    FAQSerializer, LinkSerializer, NotificationSubscriptionSerializer, ContactSerializer
 )
-from ..models import Organization, Link, FAQ, Alias
+from ..models import Organization, Link, FAQ, Alias, Contact
 
 
 class OrganizationViewSet(GenericViewSet):
@@ -122,6 +122,12 @@ class AliasViewSet(ReadOnlyModelViewSet):
     serializer_class = AliasSerializer
     queryset = Alias.objects.all()
     lookup_field = "alias"
+
+
+class ContactViewSet(ReadOnlyModelViewSet):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
+    lookup_field = "contact"
 
 
 @swagger_auto_schema(method='post', request_body=NotificationSubscriptionSerializer)

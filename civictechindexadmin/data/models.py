@@ -81,6 +81,21 @@ class Alias(models.Model):
         return f"Alias {self.id}: {self.tag} {self.alias}"
 
 
+class Contact(models.Model):
+    email = models.CharField(max_length=128, unique=True)
+    text = models.TextField(max_length=4096, null=True, blank=True)
+    logo_url = models.URLField(max_length=2048, blank=True)
+    name = models.CharField(max_length=128, unique=True)
+    organization = models.CharField(max_length=128, unique=True)
+    project_url = models.URLField(max_length=2048, blank=True)
+
+    class Meta:
+        verbose_name = "Contact"
+        verbose_name_plural = "Contacts"
+
+    def __str__(self):
+        return f"Contact {self.id}: {self.email} {self.text} {self.logo_url} {self.name} {self.organization} {self.project_url}"
+
 # ###### FAQS ###########
 class FAQ(models.Model):
     FAQ_STATUS_CHOICES = [
