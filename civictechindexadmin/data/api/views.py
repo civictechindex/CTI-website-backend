@@ -61,7 +61,13 @@ class OrganizationViewSet(GenericViewSet):
         serializer = AddOrganizationSerializer(data=request.data)
         if serializer.is_valid():
             new_org = serializer.create()
-            return Response(OrganizationFullSerializer(new_org).data, status=status.HTTP_201_CREATED)
+            data = OrganizationFullSerializer(new_org).data
+            # If we added this to an existing parent org, return the parent org name
+            if new_org.depth == 2:
+                data['parent_organization_name'] = request.data.get("parent_organization_name", '')
+            else:
+                data['parent_organization_name'] = data['parents'][0]['name']
+            return Response(data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
