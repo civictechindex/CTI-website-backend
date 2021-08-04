@@ -201,7 +201,7 @@ def test_create_organization_with_all_values(api_client):
     assert not data['affiliated']
 
 
-def test_create_organization_with_parent(api_client):
+def test_create_organization_with_parent_id(api_client):
     parent_org = OrganizationFactory.create(name='Code for All', github_id=12345)
     url = '/api/organizations/'
     input_data = _creation_data()
@@ -213,8 +213,22 @@ def test_create_organization_with_parent(api_client):
     _check_response(data, input_data)
     assert data['depth'] == 3
     assert data['path'][:-4] == parent_org.path
-    # Organizations with parents are "affilited"
-    assert data['affiliated']
+    assert data['parent_organization_name'] == parent_org.name
+
+
+def test_create_organization_with_parent_name_gets_added_to_root_org(api_client):
+    root_org = Organization.add_root(name='Root')
+    url = '/api/organizations/'
+    input_data = _creation_data()
+    input_data['parent_organization_name'] = "Some Ogranization We Don't Have"
+
+    response = api_client.post(url, input_data)
+    assert response.status_code == 201
+    data = response.json()
+    _check_response(data, input_data)
+    assert data['depth'] == 2
+    assert data['path'][:-4] == root_org.path
+    assert data['parent_organization_name'] == input_data['parent_organization_name']
 
 
 def test_organization_created_with_status_submitted(api_client):
