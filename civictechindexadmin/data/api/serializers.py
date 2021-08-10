@@ -6,7 +6,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse_lazy
 from rest_framework.validators import UniqueValidator
 
-from ..models import Organization, Link, FAQ, NotificationSubscription, Alias
+from ..models import Organization, Link, FAQ, NotificationSubscription, Alias, Contact
 
 
 class LinkSerializer(serializers.ModelSerializer):
@@ -170,6 +170,12 @@ class AliasSerializer(serializers.ModelSerializer):
         fields = ['id', 'tag', 'alias', ]
         depth = 1
 
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = ['id', 'email', 'text', 'logo_url', 'name', 'organization', 'project_url', ]
+        depth = 1
 
 class NotificationSubscriptionSerializer(serializers.Serializer):
     email_address = serializers.EmailField()

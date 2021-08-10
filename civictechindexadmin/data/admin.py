@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from treebeard.admin import TreeAdmin
 from treebeard.forms import movenodeform_factory
-from .models import Alias, FAQ, Link, NotificationSubscription, Organization
+from .models import Alias, FAQ, Link, NotificationSubscription, Organization, Contact
 from .status_code_filter import StatusCodeFilter
 
 
@@ -54,8 +54,16 @@ class NotificationSubscriptionAdmin(admin.ModelAdmin):
     search_fields = ('email_address', )
 
 
+class ContactAdmin(admin.ModelAdmin):
+    model = Contact
+    list_display = ('id', 'email', 'text', 'name', 'organization', 'project_url')
+    list_filter = ('email', 'organization')
+    search_fields = ('text', 'name')
+
+
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Link, LinkAdmin)
 admin.site.register(FAQ, FAQAdmin)
 admin.site.register(Alias, AliasAdmin)
 admin.site.register(NotificationSubscription, NotificationSubscriptionAdmin)
+admin.site.register(Contact, ContactAdmin)
