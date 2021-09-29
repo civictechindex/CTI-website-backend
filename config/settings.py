@@ -17,9 +17,19 @@ import environ
 
 import socket
 
-env = environ.Env()
-# reading .env file
-env.read_env()
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent
+# civictechindexadmin/
+APPS_DIR = ROOT_DIR / "civictechindexadmin"
+
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, 'config', '.env'))
 
 INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
@@ -27,25 +37,18 @@ INTERNAL_IPS += [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent
-# civictechindexadmin/
-APPS_DIR = ROOT_DIR / "civictechindexadmin"
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "CHANGE_ME!!!! (P.S. the SECRET_KEY environment variable will be used, if set, instead)."
+SECRET_KEY = env('SECRET_KEY', default="CHANGE_ME!!!! (set the SECRET_KEY environment variable).")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
+GITHUB_TOKEN = env('GITHUB_TOKEN', default=None)
 
 # Application definition
 
