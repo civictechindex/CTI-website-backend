@@ -8,7 +8,7 @@ from ...models import Link, Organization
 
 # While it is possible to initialize Github() without passing in any access token, it is not reccomended,
 # due to the fact that you will hit rate limit very fast.
-git_api = Github(settings.get('GITHUB_TOKEN', None))
+git_api = Github(settings.get('GH_TOKEN', None))
 
 
 def civictechindex_organizations_on_github(query='topic:civictechindex') -> dict:
@@ -90,7 +90,7 @@ class Command(BaseCommand):
     a new record for each discovered organization.
 
     NOTE: you will need a Personal Access Token from GitHub to run this script. Please use these
-    instructions to create your own token, then set it in your environment as GITHUB_TOKEN
+    instructions to create your own token, then set it in your environment as GH_TOKEN
 
     https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
     """)

@@ -48,7 +48,7 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
-GITHUB_TOKEN = env('GITHUB_TOKEN', default=None)
+GH_TOKEN = env('GH_TOKEN', default=None)
 
 # Application definition
 

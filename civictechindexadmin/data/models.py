@@ -50,7 +50,7 @@ class Organization(MP_Node):
         body = f"""A new organization, {self.name}, has been submitted.
             Please visit https://{domain}/admin/data/organization/{self.id}/change/ to review and approve it.
         """
-        gh_api = Github(settings.GITHUB_TOKEN)
+        gh_api = Github(settings.GH_TOKEN)
         try:
             repo_path = "civictechindex/CTI-website-frontend"
             repo = gh_api.get_repo(repo_path)
