@@ -1,10 +1,8 @@
 from django.conf import settings
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.contrib.sites.models import Site
 from django.utils.text import slugify
-from github import Github
+from github import Github, GithubException
 from treebeard.mp_tree import MP_Node
 
 
@@ -46,27 +44,34 @@ class Organization(MP_Node):
                 raise RuntimeError("Django's slugify method was not able to create a slug for this organization.")
         super().save(*args, **kwargs)
 
-
-@receiver(post_save, sender=Organization)
-def create_github_issue(sender, instance, created, **kwargs):
-    if created:
-        # We only want to run this in prod, so check the configured sites for a match
-        site = Site.objects.filter(domain='api.civictechindex.org').first()
-        if site:
-            gh_api = Github(settings.GITHUB_TOKEN)
-            repo = gh_api.get_repo("civictechindex/CTI-website-frontend")
-            new_org_label = repo.get_label("new organization")
-            body = f"""A new organization, {instance.name}, has been submitted.
-Please visit https://{site.domain}/admin/data/organization/{instance.id}/change/ to review and approve it.
-            """
-            try:
-                repo.create_issue(
-                    title=f"New Organization: {instance.name}",
-                    body=body,
-                    labels=[new_org_label],
-                )
-            except:  # noqa
-                print('Could not create GitHub issue')
+    def _create_github_issue(self):
+        site = Site.objects.first()
+        domain = site.domain if site else 'localhost'
+        body = f"""A new organization, {self.name}, has been submitted.
+            Please visit https://{domain}/admin/data/organization/{self.id}/change/ to review and approve it.
+        """
+        gh_api = Github(settings.GITHUB_TOKEN)
+        try:
+            repo_path = "civictechindex/CTI-website-frontend"
+            repo = gh_api.get_repo(repo_path)
+        except GithubException as e:
+            print(f"Could not retrieve the desired repository {repo_path} ", e)
+            return
+        try:
+            labels = [repo.get_label("New-Organization-Submission")]
+            if domain != 'api.civictechindex.org':
+                labels.append(repo.get_label("duplicate"))
+        except GithubException as e:
+            print("Could not retrieve the desired labels: ", e)
+            return
+        try:
+            repo.create_issue(
+                title=f"New Organization: {self.name}",
+                body=body,
+                labels=labels,
+            )
+        except:  # noqa
+            print('Could not create GitHub issue')
 
 
 class Link(models.Model):
