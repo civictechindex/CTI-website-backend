@@ -9,11 +9,12 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
+from ..models import Organization, Link, FAQ, Alias
 from .serializers import (
     AddOrganizationSerializer, AliasSerializer, OrganizationSerializer, OrganizationFullSerializer,
     FAQSerializer, LinkSerializer, NotificationSubscriptionSerializer,
 )
-from ..models import Organization, Link, FAQ, Alias
+from .utils import ResponseThen
 
 
 class OrganizationViewSet(GenericViewSet):
@@ -67,7 +68,8 @@ class OrganizationViewSet(GenericViewSet):
                 data['parent_organization_name'] = request.data.get("parent_organization_name", '')
             else:
                 data['parent_organization_name'] = data['parents'][0]['name']
-            return Response(data, status=status.HTTP_201_CREATED)
+            # Use our custom ResponseThen class to do an out of band POST to GitHub to notify PMs of submission
+            return ResponseThen(data, new_org._create_github_issue, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
