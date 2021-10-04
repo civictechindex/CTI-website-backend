@@ -90,21 +90,21 @@ class AddOrganizationSerializer(serializers.Serializer):
         """
         Check that the url provided is a valid github url
         """
-        regex_pattern = "(https://)(www.)?(github.com/)([/A-Za-z0-9_-]+)"
-        regex_result = re.search(regex_pattern, value)
+        regex_pattern = "^(?:http(?:|s)://)?(?:www.)?github.com/(?:[/a-z0-9_.-]+)$"
+        regex_result = re.search(regex_pattern, value.lower())
 
-        # if regex_result returns none it failed to match the entire string, raise error
-        # or
-        # if the lenght of the url is greater than the upper bound of the matched string, raise error
-        if not regex_result or len(value) > regex_result.span()[1]:
+        if not regex_result:
             raise serializers.ValidationError("Not a valid GitHub URL")
         return value
 
     def validate_facebook_url(self, value):
         """
-        Check that the value is a valid facebook  url
+        Check that the value is a valid facebook url
         """
-        if not value.lower().startswith('https://www.facebook.com/'):
+        regex_pattern = "^(?:http(?:|s)://)?(?:www.)?facebook.com/(?:[a-z0-9]|.(?=[a-z0-9])){5,}$"
+        regex_result = re.search(regex_pattern, value.lower())
+
+        if not regex_result:
             raise serializers.ValidationError("Not a valid Facebook URL")
         return value
 
@@ -112,7 +112,10 @@ class AddOrganizationSerializer(serializers.Serializer):
         """
         Check that the value is valid twitter url
         """
-        if 'twitter.com/' not in value.lower():
+        regex_pattern = "^(?:http(?:|s)://)?(?:www.)?twitter.com/(?:[a-z0-9_]{5,15})$"
+        regex_result = re.search(regex_pattern, value.lower())
+
+        if not regex_result:
             raise serializers.ValidationError("Not a valid Twitter URL")
         return value
 
@@ -120,7 +123,10 @@ class AddOrganizationSerializer(serializers.Serializer):
         """
         Check that the value is a valid meetup url
         """
-        if not value.lower().startswith('https://www.meetup.com/'):
+        regex_pattern = "^(?:http(?:|s)://)?(?:www.)?meetup.com/(?:[a-z0-9-]{6,70})$"
+        regex_result = re.search(regex_pattern, value.lower())
+
+        if not regex_result:
             raise serializers.ValidationError("Not a valid meetup URL")
         return value
 
