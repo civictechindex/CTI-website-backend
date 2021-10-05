@@ -8,7 +8,7 @@ from ...models import Link, Organization
 
 # While it is possible to initialize Github() without passing in any access token, it is not reccomended,
 # due to the fact that you will hit rate limit very fast.
-git_api = Github(settings.get('GH_TOKEN', None))
+git_api = Github(settings.GH_TOKEN)
 
 
 def civictechindex_organizations_on_github(query='topic:civictechindex') -> dict:
