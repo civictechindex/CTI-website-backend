@@ -63,6 +63,11 @@ class OrganizationFullSerializer(serializers.ModelSerializer):
         return [{'slug': n.slug, 'name': n.name, 'org_tag': n.org_tag} for n in children if n.depth > 1]
 
 
+def addURLPrefix(value):
+    if not value.lower().startswith('https://') and not 'https://' in value.lower() and not 'http://' in value.lower():
+        value = 'https://' + value
+    return value
+
 class AddOrganizationSerializer(serializers.Serializer):
     name = serializers.CharField(
         max_length=256,
@@ -95,7 +100,7 @@ class AddOrganizationSerializer(serializers.Serializer):
 
         if not regex_result:
             raise serializers.ValidationError("Not a valid GitHub URL")
-        return value
+        return addURLPrefix(value)
 
     def validate_facebook_url(self, value):
         """
@@ -106,7 +111,7 @@ class AddOrganizationSerializer(serializers.Serializer):
 
         if not regex_result:
             raise serializers.ValidationError("Not a valid Facebook URL")
-        return value
+        return addURLPrefix(value)
 
     def validate_twitter_url(self, value):
         """
@@ -117,7 +122,7 @@ class AddOrganizationSerializer(serializers.Serializer):
 
         if not regex_result:
             raise serializers.ValidationError("Not a valid Twitter URL")
-        return value
+        return addURLPrefix(value)
 
     def validate_meetup_url(self, value):
         """
@@ -128,7 +133,7 @@ class AddOrganizationSerializer(serializers.Serializer):
 
         if not regex_result:
             raise serializers.ValidationError("Not a valid meetup URL")
-        return value
+        return addURLPrefix(value)
 
     def create(self):
         validated_data = self.validated_data
