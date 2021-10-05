@@ -167,7 +167,7 @@ def test_create_organization_with_sparse_input(api_client):
     input_data = {
         'name': 'Code for Berwick',
         'organization_email': 'cfp@example.org',
-        'github_url': 'https://www.github.com/hackforla',
+        'github_url': 'www.github.com/hackforla',
         'org_tag': 'hack4berwick',
     }
 
