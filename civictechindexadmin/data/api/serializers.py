@@ -64,7 +64,7 @@ class OrganizationFullSerializer(serializers.ModelSerializer):
 
 
 def addURLPrefix(value):
-    if not value.lower().startswith('https://') and not 'https://' in value.lower() and not 'http://' in value.lower():
+    if not value.lower().startswith('https://') and not value.lower().startswith('http://'):
         value = 'https://' + value
     return value
 
@@ -80,10 +80,10 @@ class AddOrganizationSerializer(serializers.Serializer):
         queryset=Organization.objects.all(), required=False)
 
     website_url = serializers.URLField(max_length=1024, required=False)
-    github_url = serializers.URLField(max_length=1024)  # required
-    facebook_url = serializers.URLField(max_length=1024, required=False)
-    twitter_url = serializers.URLField(max_length=1024, required=False)
-    meetup_url = serializers.URLField(max_length=1024, required=False)
+    github_url = serializers.CharField(max_length=1024)  # required
+    facebook_url = serializers.CharField(max_length=1024, required=False)
+    twitter_url = serializers.CharField(max_length=1024, required=False)
+    meetup_url = serializers.CharField(max_length=1024, required=False)
 
     city = serializers.CharField(max_length=512, required=False)
     state = serializers.CharField(max_length=512, required=False)
