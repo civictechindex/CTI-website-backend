@@ -61,6 +61,8 @@ class Organization(MP_Node):
             labels = [repo.get_label("New-Organization-Submission")]
             if domain != 'api.civictechindex.org':
                 labels.append(repo.get_label("duplicate"))
+                labels.append(repo.get_label("p-feature: tag generator"))
+                labels.append(repo.get_label("role: product management"))
         except GithubException as e:
             print("Could not retrieve the desired labels: ", e)
             return
