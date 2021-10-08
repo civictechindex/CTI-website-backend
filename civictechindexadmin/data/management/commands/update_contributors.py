@@ -75,6 +75,7 @@ def add_new_organizations_to_db(organizations):
         # Add their GitHub URL (since we know it)
         gh_link = Link(organization=new_org, link_type='GitHub', url=org.url)
         gh_link.save()
+        new_org._create_github_issue()
 
 
 class Command(BaseCommand):
