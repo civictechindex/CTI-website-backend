@@ -65,13 +65,32 @@ class Organization(MP_Node):
             print("Could not retrieve the desired labels: ", e)
             return
         try:
-            repo.create_issue(
+            issue = repo.create_issue(
                 title=f"New Organization: {self.name}",
                 body=body,
                 labels=labels,
             )
         except:  # noqa
             print('Could not create GitHub issue')
+
+        # Issue has been created, now let's try to create a card for it in the Project Management
+        # board
+        try:
+            for project in repo.get_projects(state='open'):
+                if project.name == 'Project Management':
+                    pm_project = project
+            for col in pm_project.get_columns():
+                if col.name == 'New Issue Approval':
+                    new_issue_column = col
+        except GithubException as e:
+            print("Could not retrieve the desired Project board information: ", e)
+            return
+        # Create the card
+        try:
+            new_issue_column.create_card(content_id=issue.id, content_type='Issue')
+        except GithubException as e:
+            print("Could not retrieve the desired Project board information: ", e)
+            return
 
 
 class Link(models.Model):
