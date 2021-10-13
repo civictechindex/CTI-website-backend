@@ -45,7 +45,7 @@ SECRET_KEY = env('SECRET_KEY', default="CHANGE_ME!!!! (set the SECRET_KEY enviro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'api.civictechindex.org', 'api-stage.civictechindex.org']
 
 GH_TOKEN = env('GH_TOKEN', default=None)
 
@@ -211,5 +211,5 @@ MANAGERS = ADMINS
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = "/static"
 STATIC_URL = "/static/"
