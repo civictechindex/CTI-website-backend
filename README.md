@@ -2,6 +2,22 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/8051528982d28405e1bb/maintainability)](https://codeclimate.com/github/civictechindex/CTI-website-backend/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/8051528982d28405e1bb/test_coverage)](https://codeclimate.com/github/civictechindex/CTI-website-backend/test_coverage)
 
+## Production support notes
+
+This project provides the API / database backend for the
+[CTI-website-frontend](https://github.com/civictechindex/CTI-website-frontend/)
+project. Together they provide the code for https://civictechindex.org. The
+backend code is deployed to AWS's FARGATE service using [HackForLA's
+Incubator](https://github.com/hackforla/incubator).
+
+### Scheduled jobs
+
+We use [Django-Q](https://django-q.readthedocs.io/en/latest/index.html) to
+enable running scheduled jobs. If you are a product manager or data analyst on
+this project, you can log into the admin interface to check and see that we have
+jobs scheduled and check their status. You may also adjust the frequency with
+which we run jobs - or change the time of the next run to run a job on demand.
+
 ## Contributing
 
 If you would like to contribute to the Civic Tech Index project, please see the

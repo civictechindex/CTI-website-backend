@@ -75,6 +75,7 @@ THIRD_PARTY_APPS = [
     "django_extensions",
     "treebeard",
     "debug_toolbar",
+    "django_q",
 ]
 
 LOCAL_APPS = [
@@ -213,3 +214,13 @@ MANAGERS = ADMINS
 
 STATIC_ROOT = "/static"
 STATIC_URL = "/static/"
+
+# Configure your Q cluster - for scheduling periodic scripts
+# More details https://django-q.readthedocs.io/en/latest/configure.html
+Q_CLUSTER = {
+    "name": "cti_scripts",
+    "orm": "default",  # Use Django's ORM + database for broker
+    "workers": 1,
+    "retry": 7200,  # Retry every 2 hours. I am concerned about our API limit.
+    "timeout": 300,  # Don't let jobs run more than 5 minutes
+}
