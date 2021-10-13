@@ -1,0 +1,12 @@
+.git
+.idea
+.vscode
+.DS_Store
+
+*.sql
+*.dmp
+
+logs
+.log
+
+htmcov
