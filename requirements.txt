@@ -6,7 +6,6 @@ django-cors-headers==3.7.0
 django-coverage-plugin==1.8.0
 django-crispy-forms==1.11.2
 django-environ==0.4.5
-django-heroku==0.3.1
 djangorestframework==3.12.4
 django-treebeard==4.5.1
 drf-yasg==1.20.0
