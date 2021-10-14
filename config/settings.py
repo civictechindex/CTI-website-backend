@@ -29,7 +29,9 @@ ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent
 APPS_DIR = ROOT_DIR / "civictechindexadmin"
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, 'config', '.env'))
+env_file = os.path.join(BASE_DIR, 'config', '.env')
+if os.path.isfile(env_file):
+    environ.Env.read_env(env_file)
 
 INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
@@ -46,7 +48,7 @@ SECRET_KEY = env('SECRET_KEY', default="CHANGE_ME!!!! (set the SECRET_KEY enviro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 GH_TOKEN = env('GH_TOKEN', default=None)
 
