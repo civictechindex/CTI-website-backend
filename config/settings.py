@@ -50,6 +50,8 @@ ALLOWED_HOSTS = []
 
 GH_TOKEN = env('GH_TOKEN', default=None)
 
+REPO_PATH = env('REPO_PATH', default='civictechindex/CTI-website-frontend')
+
 # Application definition
 
 DJANGO_APPS = [
