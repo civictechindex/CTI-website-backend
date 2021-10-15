@@ -52,7 +52,7 @@ class Organization(MP_Node):
         """
         gh_api = Github(settings.GH_TOKEN)
         try:
-            repo_path = "civictechindex/CTI-website-frontend"
+            repo_path = settings.REPO_PATH
             repo = gh_api.get_repo(repo_path)
         except GithubException as e:
             print(f"Could not retrieve the desired repository {repo_path} ", e)
