@@ -1,0 +1,9 @@
+name: 'Update Contributors'
+description: 'Update CTI contributors from GitHub'
+runs:
+  using: 'docker'
+  image: '../../../Dockerfile'
+  args:
+    - 'python3'
+    - 'manage.py'
+    - 'check'
