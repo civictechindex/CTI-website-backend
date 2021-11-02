@@ -2,9 +2,8 @@ on:
   push:
     branches:
       - 1004-run-update-contributor-from-github-action
-  #schedule:
-  # Times are in UTC (PST is UTC-8:00)
-  #- cron: '41 10 * * *' # every day at 2:41am PST
+  schedule: # Times are in UTC (PST is UTC-8:00)
+    - cron: '41 10 * * *' # every day at 2:41am PST
 
 jobs:
   update_contributors:
