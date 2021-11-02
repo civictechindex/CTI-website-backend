@@ -1,0 +1,28 @@
+on:
+  push:
+    branches:
+      - 1004-run-update-contributor-from-github-action
+  #schedule:
+  # Times are in UTC (PST is UTC-8:00)
+  #- cron: '41 10 * * *' # every day at 2:41am PST
+
+jobs:
+  update_contributors:
+    runs-on: ubuntu-latest
+    environment: incubator-staging
+    name: Update CTI contributors
+    steps:
+      - name: Checkout branch containing the action
+        uses: actions/checkout@v2
+        with:
+          ref: 1004-run-update-contributor-from-github-action
+      - name: Update Contributors
+        id: update_contributors
+        uses: ./.github/actions/update-contributors
+        env:
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: 5432
+          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
