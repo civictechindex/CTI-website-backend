@@ -6,4 +6,4 @@ runs:
   args:
     - 'python3'
     - 'manage.py'
-    - 'check'
+    - 'update_contributors'
