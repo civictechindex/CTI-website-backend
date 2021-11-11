@@ -15,7 +15,7 @@ def civictechindex_organizations_on_github(query='topic:civictechindex') -> dict
     """Return a dictionary of organizations having repositories tagged with the topic `civictechindex`"""
     org_container = {}
     for repository in git_api.search_repositories(query):
-        if repository.organization:
+        if repository.organization and repository.organization.name:
             org_container[repository.organization.name] = repository.organization
 
     if not org_container:
