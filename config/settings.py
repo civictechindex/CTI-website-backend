@@ -37,6 +37,8 @@ INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS += [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
 
+USE_X_FORWARDED_FOR = True
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Quick-start development settings - unsuitable for production
@@ -121,6 +123,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "xff.middleware.XForwardedForMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -221,3 +224,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = "/static/"
 
 django_heroku.settings(locals())
+
+
+# xff middleware settings
+# This middleware sets the requests.META9'REMOTE_ADDR'] to xforwarded for
+# See: https://pypi.org/project/django-xff/
+# using very loose rules since I don't know the runtime environment
+
+XFF_NO_SPOOFING = True
+
+# The below settings should be adjusted to match the production
+# environment if we wish to control the proxy source
+#XFF_STRICT = True
+#XFF_TRUSTED_PROXY_DEPTH = 1
+#XFF_REQUIRE_HEADER = True
+#XFF_EXEMPT_STEALTH = True
