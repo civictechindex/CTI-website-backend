@@ -82,7 +82,7 @@ class Organization(MP_Node):
                 if project.name == 'Project Management':
                     pm_project = project
             for col in pm_project.get_columns():
-                if col.name == 'New Issue Approval':
+                if col.name.startswith('New Issue Approval'):
                     new_issue_column = col
         except GithubException as e:
             print("Could not retrieve the desired Project board information: ", e)
