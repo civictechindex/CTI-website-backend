@@ -61,13 +61,11 @@ docs/_build/
 # PyBuilder
 target/
 
-# pyenv
-.python-version
-
 # Environments
 .venv
 venv/
 ENV/
+.envrc
 
 # Rope project settings
 .ropeproject
