@@ -76,6 +76,10 @@ ENV/
 # mypy
 .mypy_cache/
 
+
+# Snyk Security Analysis
+.dccache
+
 ### Node template
 # Logs
 logs
