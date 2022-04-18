@@ -78,7 +78,7 @@ that allows your web container to talk to your database container.
    ```
    POSTGRES_NAME='<YOUR_DATABASE_NAME>'
    POSTGRES_PASSWORD='<YOUR_PASSWORD>'
-   POSTGRES_USER='<YOUR_POSTGRES_USERNAME'
+   POSTGRES_USER='<YOUR_POSTGRES_USERNAME>'
    POSTGRES_HOST='localhost'
    ```
 8. Execute the following steps to load the environment variables from above and
