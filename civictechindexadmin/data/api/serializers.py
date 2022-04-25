@@ -68,6 +68,7 @@ def addURLPrefix(value):
         value = 'https://' + value
     return value
 
+
 class AddOrganizationSerializer(serializers.Serializer):
     name = serializers.CharField(
         max_length=256,

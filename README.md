@@ -24,7 +24,7 @@ This project can be run using Docker OR installed directly on your machine.
 
 This project can be run locally using either [Docker](https://www.docker.com/),
 [Docker Compose](https://docs.docker.com/compose/) or your local python. If
-you are runnning without docker please ensure that the right version
+you are running without docker please ensure that the right version
 of python is installed. We suggest using [pyenv](https://github.com/pyenv/pyenv)
 to manage multiple versions of python.
 
