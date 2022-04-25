@@ -154,6 +154,10 @@ typings/
 .vscode/*
 
 
+### Pycharm and other IDEA Editors
+.idea
+
+
 ### Windows template
 # Windows thumbnail cache files
 Thumbs.db
