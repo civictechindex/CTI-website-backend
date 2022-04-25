@@ -15,8 +15,9 @@ good_github_urls = [
     ('https://github.com/civictechindex/CTI-website-backend', 'https://github.com/civictechindex/CTI-website-backend')
 ]
 
+
 @pytest.mark.parametrize("test_url,result", good_github_urls)
-def test_meetup_url_validation_good_urls(test_url, result):
+def test_meetup_url_validation_good_github_urls(test_url, result):
     assert result == AddOrganizationSerializer().validate_github_url(test_url)
 
 
@@ -25,6 +26,7 @@ bad_github_urls = [
     'bad://github.com/person/repository',
     'bad.github.com/person/repository',
 ]
+
 
 @pytest.mark.parametrize("test_url", bad_github_urls)
 def test_github_url_validation__urls(test_url):
@@ -44,8 +46,9 @@ good_facebook_urls = [
     ('facebook.com/pe.rso2020', 'https://facebook.com/pe.rso2020'),
 ]
 
+
 @pytest.mark.parametrize("test_url,result", good_facebook_urls)
-def test_meetup_url_validation_good_urls(test_url, result):
+def test_meetup_url_validation_good_facebook_urls(test_url, result):
     assert result == AddOrganizationSerializer().validate_facebook_url(test_url)
 
 
@@ -56,6 +59,7 @@ bad_facebook_urls = [
     'facebook.com/pers',
     #'facebook.com/pe.rs',
 ]
+
 
 @pytest.mark.parametrize("test_url", bad_facebook_urls)
 def test_facebook_url_validation__urls(test_url):
@@ -75,8 +79,9 @@ good_twitter_urls = [
     ('twitter.com/pe_rso2020', 'https://twitter.com/pe_rso2020'),
 ]
 
+
 @pytest.mark.parametrize("test_url,result", good_twitter_urls)
-def test_meetup_url_validation_good_urls(test_url, result):
+def test_meetup_url_validation_good_twitter_urls(test_url, result):
     assert result == AddOrganizationSerializer().validate_twitter_url(test_url)
 
 
@@ -87,6 +92,7 @@ bad_twitter_urls = [
     'twitter.com/pers',
     'twitter.com/pe#rson',
 ]
+
 
 @pytest.mark.parametrize("test_url", bad_twitter_urls)
 def test_twitter_url_validation__urls(test_url):
@@ -105,6 +111,7 @@ good_meetup_urls = [
     ('meetup.com/per-son2020', 'https://meetup.com/per-son2020'),
 ]
 
+
 @pytest.mark.parametrize("test_url,result", good_meetup_urls)
 def test_meetup_url_validation_good_urls(test_url, result):
     assert result == AddOrganizationSerializer().validate_meetup_url(test_url)
@@ -117,6 +124,7 @@ bad_meetup_urls = [
     'meetup.com/perso',
     'meetup.com/pe.rso',
 ]
+
 
 @pytest.mark.parametrize("test_url", bad_meetup_urls)
 def test_meetup_url_validation__urls(test_url):
